@@ -1,0 +1,10 @@
+datasets
+jsonlines
+pandas
+tqdm
+numpy
+scikit-learn
+seaborn
+matplotlib
+click
+black

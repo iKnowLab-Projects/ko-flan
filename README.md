@@ -3,7 +3,7 @@
 
 
 ## Task 추가방법
-
+0. [노션 페이지](https://www.notion.so/c421dc9deeec42e092a1631602723ddb?v=c0e6ecf3cece4a09a381a91d3ac7dfa3&pvs=4)에서 본인이 진행할 Task를 정한뒤 담당자에 표시하고, "진행중" 상태로 바꿉니다.
 1. task/ 에 디렉터리를 만들고 .py 파일을 생성하세요
 2. task.base의 BaseGenerator를 상속하는 Generator 클래스를 만드세요.
 3. generate() 메서드에서 주어진 split(train or test)에 맞는 결과를 yield 하면 됩니다. generator 예제 참고: [task/nsmc/generate.py](./task/nsmc/generate.py)

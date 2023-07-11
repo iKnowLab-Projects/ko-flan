@@ -1,9 +1,14 @@
 import re
 from .nsmc.generate import NSMCGenerator
 from .apeach.generate import APEACHGenerator
+from .korquadv1.generate import KorQuADv1Generator
 
 
-ALL_TASKS = {"nsmc": NSMCGenerator, "apeach": APEACHGenerator}
+ALL_TASKS = {
+    "nsmc": NSMCGenerator, 
+    "apeach": APEACHGenerator,
+    "korquad_v1.0": KorQuADv1Generator
+    }
 
 
 def find_task(pattern: str):

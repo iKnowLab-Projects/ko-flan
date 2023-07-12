@@ -1,9 +1,9 @@
 import re
 from .nsmc.generate import NSMCGenerator
 from .apeach.generate import APEACHGenerator
+from .klue_mrc.generate import KLUE_MRCGenerator
 
-
-ALL_TASKS = {"nsmc": NSMCGenerator, "apeach": APEACHGenerator}
+ALL_TASKS = {"nsmc": NSMCGenerator, "apeach": APEACHGenerator, "klue_mrc": KLUE_MRCGenerator}
 
 
 def find_task(pattern: str):

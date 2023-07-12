@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/Users/yuksehyun/Desktop/ko-flan')
 import click
 from task import find_task
 from typing import Optional
@@ -45,13 +47,13 @@ def main(
                     fout.write(instance)
 
                 split_detail[task] = i
-    
+
         details["split_" + split] = split_detail
         details[f"split_{split}_total"] = sum(split_detail.values())
 
     with Path(output_dir, "details.json").open("w") as fdetail:
         json.dump(details, fdetail, indent=4, ensure_ascii=False)
-        
+
 
 if __name__ == "__main__":
     main()

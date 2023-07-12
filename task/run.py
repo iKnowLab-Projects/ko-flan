@@ -1,5 +1,4 @@
 import sys
-sys.path.append('/Users/yuksehyun/Desktop/ko-flan')
 import click
 from task import find_task
 from typing import Optional

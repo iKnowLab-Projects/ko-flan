@@ -4,6 +4,14 @@ from .apeach.generate import APEACHGenerator
 from .klue_mrc.generate import KLUE_MRCGenerator
 
 ALL_TASKS = {"nsmc": NSMCGenerator, "apeach": APEACHGenerator, "klue_mrc": KLUE_MRCGenerator}
+from .korquadv1.generate import KorQuADv1Generator
+
+
+ALL_TASKS = {
+    "nsmc": NSMCGenerator,
+    "apeach": APEACHGenerator,
+    "korquad_v1.0": KorQuADv1Generator
+    }
 
 
 def find_task(pattern: str):

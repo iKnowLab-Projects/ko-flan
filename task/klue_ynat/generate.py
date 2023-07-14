@@ -53,5 +53,5 @@ class KlueYnatGenerator(BaseGenerator):
                 "instruction": instruction,
                 "input": text,
                 "positives": pos,
-                "negatives": negß,
+                "negatives": neg,
             }

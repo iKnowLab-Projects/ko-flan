@@ -23,12 +23,12 @@ class KLUE_MRCGenerator(BaseGenerator):
             instruction = row['question']
             postive = row['answers']['text'][0]
             same_title_df = df.loc[(df['title']==row['title']) &  (df['answers'] != row['answers']),'answers']
+            # 같은 title이 없는 경우 같은 category에 있는 negative 데이터 추출
             if(same_title_df.isnull().all()):
                negative =  np.random.choice(df.loc[( df['news_category']== row['news_category']) &(df['answers'] != row['answers']),'answers'])['text'][0]
+            #같은 title이 있는 경우 같은 ttile에 있는 negative 데이터 추출
             else:
-               postive  =  np.random.choice(same_title_df)['text'][0]
-
-
+               negative  =  np.random.choice(same_title_df)['text'][0]
 
             yield {
                 "instruction": instruction,

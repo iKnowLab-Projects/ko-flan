@@ -1,5 +1,6 @@
 import sys
 import click
+sys.path.append('/Users/yuksehyun/Desktop/ko-flan')
 from task import find_task
 from typing import Optional
 from tqdm.auto import tqdm

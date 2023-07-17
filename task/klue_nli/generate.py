@@ -45,27 +45,31 @@ class KLUE_NLIGenerator(BaseGenerator):
     def generate(self, split: str):
         if split == 'test':
             split = 'validation'
-
+        ## data load
         dataset = load_dataset("klue",'nli', split=split)
         split ='test'
         df = pd.DataFrame(dataset)
+        ## 중립 데이터 삭제
         drop_df = df.drop(df[df['label']==1].index)
         new_df = pd.DataFrame()
         new_df['input'] = drop_df['premise']
         new_df.drop_duplicates(inplace = True)
+        ## postive ,neagtive 초기화
         new_df['postive'] =None
         new_df['negative']=None
+
         for i in range(0, new_df.shape[0]):
           row = new_df.iloc[i]
           instruction = random.choice(self.instructions)
           text = row['input']
           new_df['postive'].iloc[i] = df.loc[(df['premise']==row['input'])&(df['label']==0),'hypothesis']
           new_df['negative'].iloc[i] = df.loc[(df['premise']==row['input'])&(df['label']==2),'hypothesis']
+          ## postive가 한개 이상인 행 선택
           if(len(new_df['postive'].iloc[i])>0):
              postive = new_df['postive'].iloc[i][0]
           else:
              postive = 0
-
+          # negative가 한개 이상인 행 선택
           if(len(new_df['negative'].iloc[i])>0):
              negative = new_df['negative'].iloc[i][0]
           else:

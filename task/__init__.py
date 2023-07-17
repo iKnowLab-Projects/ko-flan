@@ -4,7 +4,7 @@ from .apeach.generate import APEACHGenerator
 from .klue_mrc.generate import KLUE_MRCGenerator
 from .korquadv1.generate import KorQuADv1Generator
 from .klue_ynat.generate import KlueYnatGenerator
-from .klue_nli.generate import Klue_MRCGenerator
+from .klue_nli.generate import KLUE_NLIGenerator
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,

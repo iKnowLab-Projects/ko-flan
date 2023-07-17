@@ -2,9 +2,9 @@ import re
 from .nsmc.generate import NSMCGenerator
 from .apeach.generate import APEACHGenerator
 from .klue_mrc.generate import KLUE_MRCGenerator
-from .klue_nli.generate import KLUE_NLIGenerator
 from .korquadv1.generate import KorQuADv1Generator
 from .klue_ynat.generate import KlueYnatGenerator
+from .klue_nli.generate import Klue_MRCGenerator
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
@@ -14,6 +14,8 @@ ALL_TASKS = {
     "klue_nli": KLUE_NLIGenerator,
     "klue_ynat": KlueYnatGenerator
     }
+
+
 
 
 def find_task(pattern: str):

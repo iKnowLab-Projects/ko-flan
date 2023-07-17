@@ -4,14 +4,15 @@ from .apeach.generate import APEACHGenerator
 from .klue_mrc.generate import KLUE_MRCGenerator
 from .klue_nli.generate import KLUE_NLIGenerator
 from .korquadv1.generate import KorQuADv1Generator
-
+from .klue_ynat.generate import KlueYnatGenerator
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
     "apeach": APEACHGenerator,
     "korquad_v1.0": KorQuADv1Generator,
     "klue_mrc": KLUE_MRCGenerator,
-    "klue_nli": KLUE_NLIGenerator
+    "klue_nli": KLUE_NLIGenerator,
+    "klue_ynat": KlueYnatGenerator
     }
 
 

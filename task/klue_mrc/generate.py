@@ -22,10 +22,6 @@ class KLUE_MRCGenerator(BaseGenerator):
             instruction = row['question']
             postive = row['answers']['text'][0]
             negative =  np.random.choice(df.loc[(((df['title']==row['title']) |( df['news_category'] == row['news_category'])) & df['answers'] != row['answers']),'answers'])['text'][0]
-
-
-
-
             yield {
                 "instruction": instruction,
                 "input": text,

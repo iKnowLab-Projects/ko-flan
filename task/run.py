@@ -15,7 +15,7 @@ from pathlib import Path
 @click.option("--max_instance_per_task", default=2000)
 def main(
     splits: str, tasks: str, output_dir: str, max_instance_per_task: Optional[int]
-):  
+):
     splits = splits.split(",")
     all_tasks = dict()
     for task in tasks.split(","):
@@ -28,7 +28,7 @@ def main(
     details = {
         "splits": ",".join(splits),
         "tasks": ",".join(list(all_tasks.keys())),
-        "max_instance_per_task": max_instance_per_task
+        "max_instance_per_task": max_instance_per_task,
     }
 
     tqdm_split = tqdm(splits, position=1)

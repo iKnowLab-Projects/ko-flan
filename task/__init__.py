@@ -14,10 +14,8 @@ ALL_TASKS = {
     "klue_mrc": KLUE_MRCGenerator,
     "klue_nli": KLUE_NLIGenerator,
     "klue_ynat": KlueYnatGenerator,
-    "kor_nlu" : KorNLUGenerator
-    }
-
-
+    "kor_nlu": KorNLUGenerator,
+}
 
 
 def find_task(pattern: str):

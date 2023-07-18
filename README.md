@@ -8,7 +8,7 @@
 2. task.base의 BaseGenerator를 상속하는 Generator 클래스를 만드세요.
 3. generate() 메서드에서 주어진 split(train or test)에 맞는 결과를 yield 하면 됩니다. generator 예제 참고: [task/nsmc/generate.py](./task/nsmc/generate.py)
 4. [task/__init__.py](task/__init__.py)안의 ALL_TASKS 에 구현한 generator class를 추가하세요.
-5. [task/run.py](task/run.py)를 실행하세요.
+5. [task/run.py](task/run.py)를 실행하세요.  `python -m task.run`
 6. 결과가 기본적으로 data/ 폴더에 저장됩니다.
 
 

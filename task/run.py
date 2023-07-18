@@ -1,4 +1,4 @@
-import sys
+import os
 import click
 from task import find_task
 from typing import Optional
@@ -15,13 +15,19 @@ from pathlib import Path
 @click.option("--max_instance_per_task", default=2000)
 def main(
     splits: str, tasks: str, output_dir: str, max_instance_per_task: Optional[int]
-):
+):  
     splits = splits.split(",")
-    tasks = find_task(tasks)
+    all_tasks = dict()
+    for task in tasks.split(","):
+        all_tasks.update(find_task(task))
+    print(all_tasks)
+
+    for split in splits:
+        os.makedirs(Path(output_dir, split), exist_ok=True)
 
     details = {
         "splits": ",".join(splits),
-        "tasks": ",".join(list(tasks.keys())),
+        "tasks": ",".join(list(all_tasks.keys())),
         "max_instance_per_task": max_instance_per_task
     }
 
@@ -30,10 +36,10 @@ def main(
         tqdm.desc = split + " split"
         split_detail = {}
 
-        with jsonlines.open(f"{output_dir}/{split}.jsonl", "w") as fout:
-            tqdm_task = tqdm(tasks.items(), position=0, leave=False)
+        tqdm_task = tqdm(all_tasks.items(), position=0, leave=False)
 
-            for task, generator_cls in tqdm_task:
+        for task, generator_cls in tqdm_task:
+            with jsonlines.open(Path(output_dir, split, f"{task}.json"), "w") as fout:
                 tqdm_task.desc = task
                 generator = generator_cls()
 

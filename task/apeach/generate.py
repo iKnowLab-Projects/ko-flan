@@ -44,6 +44,6 @@ class APEACHGenerator(BaseGenerator):
             yield {
                 "instruction": instruction,
                 "input": text,
-                "positives": [random.choice(pos)],
-                "negatives": [random.choice(neg)],
+                "positives": pos,
+                "negatives": neg
             }

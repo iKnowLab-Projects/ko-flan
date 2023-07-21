@@ -24,7 +24,7 @@ class KorNLUGenerator(BaseGenerator):
 
     def generate(self, split: str):
         dataset = load_dataset("kor_nlu", "nli", split=split)
-        dataset = dataset.filter(lambda example: example["label"] != 1)
+        dataset = dataset.filter(lambda x: x["label"] != 1)
 
         grouped_dataset = defaultdict(list)
         for item in dataset:
@@ -36,16 +36,19 @@ class KorNLUGenerator(BaseGenerator):
             text = premise
 
             pos = list(
-                filter(lambda example: example["label"] == 0, grouped_dataset[premise])
+                filter(lambda x: x["label"] == 0, grouped_dataset[premise])
             )
             neg = list(
-                filter(lambda example: example["label"] == 2, grouped_dataset[premise])
+                filter(lambda x: x["label"] == 2, grouped_dataset[premise])
             )
+
+            pos_list = [y["hypothesis"] for y in pos]
+            neg_list = [y["hypothesis"] for y in neg]
 
             if len(neg) > 0 and len(pos) > 0:
                 yield {
                     "instruction": instruction,
                     "input": text,
-                    "positives": random.choice(pos)["hypothesis"],
-                    "negatives": random.choice(neg)["hypothesis"],
+                    "positives": pos_list,
+                    "negatives": neg_list,
                 }

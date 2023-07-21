@@ -6,6 +6,7 @@ from .korquadv1.generate import KorQuADv1Generator
 from .klue_ynat.generate import KlueYnatGenerator
 from .klue_nli.generate import KLUE_NLIGenerator
 from .kornlu_kornli.generate import KorNLUGenerator
+from .unsmile.generate import UnSmileGenerator
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
@@ -15,6 +16,7 @@ ALL_TASKS = {
     "klue_nli": KLUE_NLIGenerator,
     "klue_ynat": KlueYnatGenerator,
     "kor_nlu": KorNLUGenerator,
+    "unsmile": UnSmileGenerator
 }
 
 

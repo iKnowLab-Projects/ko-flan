@@ -7,6 +7,8 @@ from .klue_ynat.generate import KlueYnatGenerator
 from .klue_nli.generate import KLUE_NLIGenerator
 from .kornlu_kornli.generate import KorNLUGenerator
 from .unsmile.generate import UnSmileGenerator
+from .klue_re.generate import KlueReGenerator
+
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
@@ -16,7 +18,8 @@ ALL_TASKS = {
     "klue_nli": KLUE_NLIGenerator,
     "klue_ynat": KlueYnatGenerator,
     "kor_nlu": KorNLUGenerator,
-    "unsmile": UnSmileGenerator
+    "unsmile": UnSmileGenerator,
+    "klue_re":KlueReGenerator
 }
 
 

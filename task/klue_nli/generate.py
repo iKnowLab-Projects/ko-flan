@@ -84,6 +84,6 @@ class KLUE_NLIGenerator(BaseGenerator):
             yield {
                 "instruction": instruction,
                 "input": text,
-                "positives": postive,
-                "negatives": negative,
+                "positives": [postive],
+                "negatives": [negative],
             }

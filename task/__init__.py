@@ -8,8 +8,8 @@ from .klue_nli.generate import KLUE_NLIGenerator
 from .kornlu_kornli.generate import KorNLUGenerator
 from .unsmile.generate import UnSmileGenerator
 from .klue_re.generate import KlueReGenerator
-
-
+from .kobest_copa.generate import KOBEST_COPAGenerator
+from .kobest_hellaswag.generate import KOBEST_HELLASWAGGenerator
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
     "apeach": APEACHGenerator,
@@ -19,7 +19,9 @@ ALL_TASKS = {
     "klue_ynat": KlueYnatGenerator,
     "kor_nlu": KorNLUGenerator,
     "unsmile": UnSmileGenerator,
-    "klue_re":KlueReGenerator
+    "klue_re":KlueReGenerator,
+    "kobest_copa":KOBEST_COPAGenerator,
+    "kobest_hellaswag":KOBEST_HELLASWAGGenerator
 }
 
 

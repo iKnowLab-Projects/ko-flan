@@ -42,6 +42,6 @@ class KLUE_MRCGenerator(BaseGenerator):
             yield {
                 "instruction": instruction,
                 "input": text,
-                "positives": postive,
-                "negatives": negative,
+                "positives": [postive],
+                "negatives": [negative],
             }

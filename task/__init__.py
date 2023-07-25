@@ -11,6 +11,7 @@ from .klue_re.generate import KlueReGenerator
 from .kobest_copa.generate import KOBEST_COPAGenerator
 from .kobest_hellaswag.generate import KOBEST_HELLASWAGGenerator
 from .kobest_boolq.generate import KobestBoolqGenerator
+from .kobest_wic.generate import KobestWicGenerator
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
@@ -24,7 +25,8 @@ ALL_TASKS = {
     "klue_re":KlueReGenerator,
     "kobest_copa":KOBEST_COPAGenerator,
     "kobest_hellaswag":KOBEST_HELLASWAGGenerator,
-    "kobest_boolq":KobestBoolqGenerator
+    "kobest_boolq":KobestBoolqGenerator,
+    "kobest_wic":KobestWicGenerator
 }
 
 

@@ -53,7 +53,7 @@ class KlueYnatGenerator(BaseGenerator):
             # 무작위로 instance를 고른다
             instruction = random.choice(self.instructions)
             text = item["text"]
-            pos = self.labelToTextDict[item["label"]]
+            pos = [self.labelToTextDict[item["label"]]]
             neg = [x for x in self.labelToTextDict.values() if x != pos]
 
             yield {

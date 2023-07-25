@@ -47,5 +47,5 @@ class KOBEST_HELLASWAGGenerator(BaseGenerator):
                 "instruction": instruction,
                 "input": text,
                 "positives": [pos],
-                "negatives": [neg],
+                "negatives": neg,
             }

@@ -79,7 +79,7 @@ class KLUE_NLIGenerator(BaseGenerator):
             else:
                 negative = 0
             if (postive == 0) | (negative == 0):
-                pass
+                continue
 
             yield {
                 "instruction": instruction,

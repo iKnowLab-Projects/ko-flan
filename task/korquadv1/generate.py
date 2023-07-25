@@ -36,9 +36,10 @@ class KorQuADv1Generator(BaseGenerator):
             # 정답 라벨과 동일하거나 정답 라벨과 겹치는 negative 라벨은 제거한다.
             negative_labels = [x for x in negative_labels if check_label(x, label)]
 
-            yield {
-                "instruction": instruction,
-                "input": text,
-                "positives": label,
-                "negatives": negative_labels,
-            }
+            if len(negative_labels) > 0:
+                yield {
+                    "instruction": instruction,
+                    "input": text,
+                    "positives": label,
+                    "negatives": negative_labels,
+                }

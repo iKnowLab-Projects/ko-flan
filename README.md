@@ -23,7 +23,7 @@ python -m train.reward_trainer \
 
 루트 디렉터리에서 아래처럼 실행할 경우, 모든 테스크별로 2천개씩 data/폴더에 생성됩니다.
 ```
-python -m task.run --max_instance_per_task 10000
+python -m task.run
 ```
 
 예시 2. nsmc, apeach task만 생성하고 테스크 당 최대 10개만 생성하기

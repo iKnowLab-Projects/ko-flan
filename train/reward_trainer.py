@@ -85,7 +85,7 @@ class RewardTrainer(BaseTrainer):
     def training_step(self, batch):
         pos = self.model(**batch["positives"]).logits
         neg = self.model(**batch["negatives"]).logits
-        return (pos - neg).sigmoid().mean()
+        return (neg - pos).sigmoid().mean()
 
     def evaluation_step(self, batch):
         loss = self.training_step(batch)

@@ -20,7 +20,7 @@ def main(
     all_tasks = dict()
     for task in tasks.split(","):
         all_tasks.update(find_task(task))
-    print(all_tasks)
+    print(list(all_tasks.keys()))
 
     for split in splits:
         os.makedirs(Path(output_dir, split), exist_ok=True)

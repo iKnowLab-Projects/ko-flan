@@ -36,9 +36,10 @@ class NSMCGenerator(BaseGenerator):
             else:
                 pos, neg = self.negatives, self.positives
 
-            yield {
-                "instruction": instruction,
-                "input": text,
-                "positives": pos,
-                "negatives": neg,
-            }
+            if len(text) > 0:
+                yield {
+                    "instruction": instruction,
+                    "input": text,
+                    "positives": pos,
+                    "negatives": neg,
+                }

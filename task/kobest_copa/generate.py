@@ -47,9 +47,7 @@ class KOBEST_COPAGenerator(BaseGenerator):
         dataset = load_dataset('skt/kobest_v1','copa', split=split)
 
         for item in dataset:
-            label = item["question"]
-            if label =='원인 ':
-                label = "원인"
+            label = item["question"].strip()
             instruction = random.choice(self.instructions[label])
             text = item["premise"]
             pos = item["alternative_1"]

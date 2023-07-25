@@ -8,3 +8,9 @@ seaborn
 matplotlib
 click
 black
+huggingface-hub
+accelerate
+transformers
+wandb
+tokenizers
+evaluate

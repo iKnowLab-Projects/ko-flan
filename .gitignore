@@ -1,4 +1,6 @@
 data/
+checkpoint
+wandb/
 
 #testfile
 test*.ipynb

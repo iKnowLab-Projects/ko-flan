@@ -10,6 +10,8 @@ from .unsmile.generate import UnSmileGenerator
 from .klue_re.generate import KlueReGenerator
 from .kobest_copa.generate import KOBEST_COPAGenerator
 from .kobest_hellaswag.generate import KOBEST_HELLASWAGGenerator
+from .kobest_boolq.generate import KobestBoolqGenerator
+
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
     "apeach": APEACHGenerator,
@@ -21,7 +23,8 @@ ALL_TASKS = {
     "unsmile": UnSmileGenerator,
     "klue_re":KlueReGenerator,
     "kobest_copa":KOBEST_COPAGenerator,
-    "kobest_hellaswag":KOBEST_HELLASWAGGenerator
+    "kobest_hellaswag":KOBEST_HELLASWAGGenerator,
+    "kobest_boolq":KobestBoolqGenerator
 }
 
 

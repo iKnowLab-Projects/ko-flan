@@ -1,5 +1,24 @@
 # ko-flan
 
+## 학습
+### Reward Model
+```bash
+# script/train_reward.sh
+
+python -m train.reward_trainer \
+    --do_train --do_eval \
+    --project ko-flan \
+    --run_name test \
+    --model_name_or_path monologg/koelectra-small-v3-discriminator \
+    --dataset iknow-lab/koflan-test-110k-0725 \
+    --logging_steps 500 \
+    --per_device_train_batch_size 8 \
+    --num_train_epochs 10 \
+    --save_strategy epoch \
+    --evaluation_strategy epoch \
+    --output_dir ./checkpoint
+```
+
 ## 실행방법
 
 루트 디렉터리에서 아래처럼 실행할 경우, 모든 테스크별로 2천개씩 data/폴더에 생성됩니다.
@@ -70,6 +89,7 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
 }
 
 
+```
 ## 저장한 모델을 huggingface hub에 올리기
 ```
 # 로그인 안했다면

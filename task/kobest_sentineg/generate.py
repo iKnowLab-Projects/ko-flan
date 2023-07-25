@@ -1,5 +1,6 @@
 from task.base import BaseGenerator
 from datasets import load_dataset
+import random
 
 
 class KobestBoolqGenerator(BaseGenerator):
@@ -39,9 +40,10 @@ class KobestBoolqGenerator(BaseGenerator):
                 pos, neg = self.positives, self.negatives
             else:
                 pos, neg = self.negatives, self.positives
+            instruction = random.choice(self.instructions)
 
             yield {
-                "instruction": self.instruction,
+                "instruction": instruction,
                 "input": input,
                 "positives": pos,
                 "negatives": neg,

@@ -32,7 +32,7 @@ class KobestWicGenerator(BaseGenerator):
             word = item["word"]
             instruction = random.choice(self.instructions)
             instruction = instruction.format(word=f'{word}')
-            text = "문장1: " + item["context_1"] + " | 문장2: " + item["context_2"]
+            text = "문장1: " + item["context_1"] + " 문장2: " + item["context_2"]
             
             if item["label"] == 0: # false 
                 pos, neg = self.negatives, self.positives

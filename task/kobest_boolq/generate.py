@@ -14,8 +14,8 @@ class KobestBoolqGenerator(BaseGenerator):
         dataset = load_dataset("skt/kobest_v1", "boolq", split=split)
 
         for item in dataset:
-            instruction = item["paragraph"]
-            input = item["question"]
+            instruction = item["question"]
+            input = item["paragraph"]
             
             if item["label"] == 1: # true
                 pos, neg = self.positives, self.negatives

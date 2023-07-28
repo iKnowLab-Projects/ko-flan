@@ -7,8 +7,7 @@ class UnSmileGenerator(BaseGenerator):
     def __init__(self) -> None:
         super().__init__()
 
-        self.positives = ["있습니다", "예", "네", "그렇습니다", "포함합니다", "혐오 표현입니다"]
-        self.negatives = ["없습니다", "아니요", "아닙니다", "포함하지 않습니다", "혐오 표현이 아닙니다"]
+        self.labels = ["여성/가족", "남성", "성소수자", "인종/국적", "연령", "지역", "종교", "기타 혐오", "악플/욕설", "clean"]
         self.instructions = [
             "이 문장에 비난적인 표현이 포함되어 있나요?",
             "비판적인 표현이 이 문장에 포함되어 있습니까?",
@@ -33,15 +32,18 @@ class UnSmileGenerator(BaseGenerator):
         for item in dataset:
             instruction = random.choice(self.instructions)
             text = item["문장"]
+            pos_labels = []
+            neg_labels = []
             
-            if item["clean"] == 1: # clean-speech 
-                pos, neg = self.negatives, self.positives
-            else:
-                pos, neg = self.positives, self.negatives
-                
+            for index, i in enumerate(item["labels"]):
+                if i == 1:
+                    pos_labels.append(self.labels[index])
+                else:
+                    neg_labels.append(self.labels[index])     
+
             yield {
                 "instruction": instruction,
                 "input": text,
-                "positives": pos,
-                "negatives": neg,
+                "positives": pos_labels,
+                "negatives": neg_labels,
             }

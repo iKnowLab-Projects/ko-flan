@@ -12,6 +12,8 @@ from .kobest_copa.generate import KOBEST_COPAGenerator
 from .kobest_hellaswag.generate import KOBEST_HELLASWAGGenerator
 from .kobest_boolq.generate import KobestBoolqGenerator
 from .kobest_wic.generate import KobestWicGenerator
+from .niklex.generate import NIKLexGenerator
+from . import nikl
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
@@ -26,7 +28,9 @@ ALL_TASKS = {
     "kobest_copa":KOBEST_COPAGenerator,
     "kobest_hellaswag":KOBEST_HELLASWAGGenerator,
     "kobest_boolq":KobestBoolqGenerator,
-    "kobest_wic":KobestWicGenerator
+    "kobest_wic":KobestWicGenerator,
+    "niklex":NIKLexGenerator,
+    "nikl_absa": nikl.ABSAGenerator,
 }
 
 

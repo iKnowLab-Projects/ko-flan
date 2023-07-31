@@ -4,9 +4,11 @@ import random
 from typing import Any, Callable, Dict, List, NewType, Optional, Tuple, Union
 
 from .base import BaseTrainer, BaseTrainingArguments, collate_dictlist
+from itertools import chain
 
 import torch
 
+import pandas as pd
 from pprint import pprint
 from datasets import load_dataset
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
@@ -70,7 +72,7 @@ class RewardTrainer(BaseTrainer):
 
         return {
             'train': self.dataset['train'],
-            'validation': self.dataset['test'],
+            'validation': self.dataset['test'] #.select(range(1000)),
         }
 
     def get_collator(self):
@@ -82,25 +84,51 @@ class RewardTrainer(BaseTrainer):
             return_tensors="pt",
         )
 
+    def _shared_step(self, batch):
+        pos = self.model(**batch["positives"]).logits[:, 0]
+        neg = self.model(**batch["negatives"]).logits[:, 0]
+        loss = (neg - pos).sigmoid()
+        acc = pos > neg
+        return {
+            "loss": loss, 
+            "acc": acc,
+            "task": batch["task"]
+        }
+    
     def training_step(self, batch):
-        pos = self.model(**batch["positives"]).logits
-        neg = self.model(**batch["negatives"]).logits
-        return (neg - pos).sigmoid().mean()
+        loss = self._shared_step(batch)["loss"]
+        return loss.mean()
 
     def evaluation_step(self, batch):
-        loss = self.training_step(batch)
+        return self._shared_step(batch)
 
-        return {
-            'loss': loss,
-        }
 
     def collate_evaluation(self, results: List[Dict]):
-        eval_mean_loss = torch.stack(results['loss']).mean().item()
-        eval_results = {
-            "loss": eval_mean_loss,
-        }
+        print(results)
+        losses = list(chain(*torch.stack(results['loss']).tolist()))
+        accuracies = list(chain(*torch.stack(results['acc']).tolist()))
+        tasks = list(chain(*results["task"]))
+
+        print(len(losses))
+        print(len(accuracies))
+        print(len(tasks))
+
+        df = pd.DataFrame({
+            "loss": losses,
+            "acc": accuracies,
+            "task": tasks
+        })
+        result = df.groupby("task").mean()
+        
         pprint("evaluation result")
-        pprint(eval_results)
+        print(result)
+
+        eval_results = {}
+        for task, row in result.iterrows():
+            loss, acc = row["loss"], row["acc"]
+            eval_results[f"{task}/loss"] = loss
+            eval_results[f"{task}/acc"] = acc
+
         return eval_results
     
 

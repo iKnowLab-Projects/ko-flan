@@ -25,14 +25,14 @@ def main(
     for split in splits:
         os.makedirs(Path(output_dir, split), exist_ok=True)
 
-    details = {
-        "splits": ",".join(splits),
-        "tasks": ",".join(list(all_tasks.keys())),
-        "max_instance_per_task": max_instance_per_task,
-    }
 
     tqdm_split = tqdm(splits, position=1)
     for split in tqdm_split:
+        details = {
+            "splits": split,
+            "tasks": ",".join(list(all_tasks.keys())),
+            "max_instance_per_task": max_instance_per_task,
+        }
         tqdm.desc = split + " split"
         split_detail = {}
 
@@ -47,7 +47,7 @@ def main(
                     instance["task"] = task
                     instance["id"] = f"{task}-{i + 1}"
 
-                    if i >= max_instance_per_task:
+                    if max_instance_per_task > 0 and i >= max_instance_per_task:
                         break
                     fout.write(instance)
 
@@ -56,8 +56,8 @@ def main(
         details["split_" + split] = split_detail
         details[f"split_{split}_total"] = sum(split_detail.values())
 
-    with Path(output_dir, "details.json").open("w") as fdetail:
-        json.dump(details, fdetail, indent=4, ensure_ascii=False)
+        with Path(output_dir, f"details_{split}.json").open("w") as fdetail:
+            json.dump(details, fdetail, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":

@@ -13,6 +13,7 @@ from .kobest_hellaswag.generate import KOBEST_HELLASWAGGenerator
 from .kobest_boolq.generate import KobestBoolqGenerator
 from .kobest_wic.generate import KobestWicGenerator
 from .niklex.generate import NIKLexGenerator
+from .mm_spellcorrect import mmSpellCorrectGenerator
 from . import nikl
 
 ALL_TASKS = {
@@ -31,6 +32,7 @@ ALL_TASKS = {
     "kobest_wic":KobestWicGenerator,
     "niklex":NIKLexGenerator,
     "nikl_absa": nikl.ABSAGenerator,
+    "mms_spellcorrect":mmSpellCorrectGenerator
 }
 
 

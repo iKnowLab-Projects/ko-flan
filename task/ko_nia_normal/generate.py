@@ -38,8 +38,8 @@ class KoNiaGenerator(BaseGenerator):
                     
             if len(pos_list) > 0 and len(neg_list) > 0:
                 yield {
-                    "instruction": context,
-                    "input": question,
+                    "instruction": question,
+                    "input": context,
                     "positives": pos_list,
                     "negatives": neg_list,
                 }

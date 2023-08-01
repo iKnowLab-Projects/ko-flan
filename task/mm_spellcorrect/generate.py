@@ -86,7 +86,6 @@ class mmSpellCorrectGenerator(BaseGenerator):
             yield {
                 "instruction": instruction,
                 "input": text,
-                "positives": [pos]
-                ,
+                "positives": [pos],
                 "negatives": neg,
             }

@@ -15,6 +15,7 @@ from .kobest_wic.generate import KobestWicGenerator
 from .niklex.generate import NIKLexGenerator
 from .mm_spellcorrect.generate import mmSpellCorrectGenerator
 from .ko_nia_normal.generate import KoNiaGenerator
+from .mm_dialog.generate import mmDialogGenerator
 from . import nikl
 
 ALL_TASKS = {
@@ -35,8 +36,10 @@ ALL_TASKS = {
     "nikl_absa": nikl.ABSAGenerator,
     "mms_spellcorrect":mmSpellCorrectGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
-    "ko_nia_normal": KoNiaGenerator
-
+    "ko_nia_normal": KoNiaGenerator,
+    "mm_spellcorrect":mmSpellCorrectGenerator,
+    "mm_dialog":mmDialogGenerator,
+    "nikl_cb2020": nikl.CB2020Generator
 }
 
 

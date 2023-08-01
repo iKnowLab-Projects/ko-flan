@@ -14,6 +14,7 @@ from .kobest_boolq.generate import KobestBoolqGenerator
 from .kobest_wic.generate import KobestWicGenerator
 from .niklex.generate import NIKLexGenerator
 from .mm_spellcorrect.generate import mmSpellCorrectGenerator
+from .mm_dialog.generate import mmDialogGenerator
 from . import nikl
 
 ALL_TASKS = {
@@ -32,7 +33,8 @@ ALL_TASKS = {
     "kobest_wic":KobestWicGenerator,
     "niklex":NIKLexGenerator,
     "nikl_absa": nikl.ABSAGenerator,
-    "mms_spellcorrect":mmSpellCorrectGenerator,
+    "mm_spellcorrect":mmSpellCorrectGenerator,
+    "mm_dialog":mmDialogGenerator,
     "nikl_cb2020": nikl.CB2020Generator
 }
 

@@ -79,7 +79,7 @@ class mmSpellCorrectGenerator(BaseGenerator):
         for item in dataset:
             # 무작위로 instance를 고른다
             instruction = random.choice(self.instructions)
-            text = item['conversation']
+            text = ' '.join(x for x in item['conversation'])
             pos = item['topic']
             neg = [x for x in self.topicList if x != pos]
 

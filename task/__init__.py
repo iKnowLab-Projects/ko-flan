@@ -32,7 +32,11 @@ ALL_TASKS = {
     "kobest_wic":KobestWicGenerator,
     "niklex":NIKLexGenerator,
     "nikl_absa": nikl.ABSAGenerator,
+<<<<<<< HEAD
     "mms_spellcorrect":mmSpellCorrectGenerator
+=======
+    "nikl_cb2020": nikl.CB2020Generator
+>>>>>>> 2f4b7eeb628d64c1530911025aa8e07a1940d844
 }
 
 

@@ -31,6 +31,7 @@ ALL_TASKS = {
     "kobest_wic":KobestWicGenerator,
     "niklex":NIKLexGenerator,
     "nikl_absa": nikl.ABSAGenerator,
+    "nikl_cb2020": nikl.CB2020Generator
 }
 
 

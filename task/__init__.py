@@ -16,6 +16,7 @@ from .niklex.generate import NIKLexGenerator
 from .mm_spellcorrect.generate import mmSpellCorrectGenerator
 from .ko_nia_normal.generate import KoNiaGenerator
 from .mm_dialog.generate import mmDialogGenerator
+from .tl_text_entailment.generate import TlTextEntailmentGenerator
 from . import nikl
 
 ALL_TASKS = {
@@ -40,7 +41,8 @@ ALL_TASKS = {
     "mm_spellcorrect":mmSpellCorrectGenerator,
     "mm_dialog":mmDialogGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
-    "nikl_cb2021": nikl.CB2021Generator
+    "nikl_cb2021": nikl.CB2021Generator,
+    "tl_text_entailment": TlTextEntailmentGenerator
 }
 
 

@@ -37,7 +37,7 @@ class mmDialogGenerator(BaseGenerator):
         ]
 
     def generate(self, split: str):
-        dataset = load_dataset("iknow-lab/mm_spellCheck", split='train', use_auth_token=True).shuffle(seed=42)
+        dataset = load_dataset("iknow-lab/mm_dialog", split='train', use_auth_token=True).shuffle(seed=42)
         dataset = dataset.train_test_split(test_size=0.1)[split]
         self.topicList = list(set([x['topic'] for x in dataset]))
         for item in dataset:

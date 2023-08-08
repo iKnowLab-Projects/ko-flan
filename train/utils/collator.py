@@ -77,7 +77,7 @@ class LanguageModelCollator(object):
         for k in self.padding_feature_keys:
             padding_features[k] = features[k]
         
-        self.tokenizer.padding_side = padding_side
+        self.tokenizer.padding_side = self.padding_side
         batch = self.tokenizer.pad(
             padding_features,
             padding=self.padding,

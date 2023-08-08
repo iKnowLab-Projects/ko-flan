@@ -19,6 +19,9 @@ from .kowow_dialog_passage.generate import KOWOWDIALOGPASSAGEGenerator
 from .kowow_dialog_topic.generate import KOWOWDIALOGTOPICGenerator
 from .kowow_sentence_topic.generate import KOWOWSENTENCETOPICGenerator
 from .kowow_passage_sentence.generate import KOWOWPASSAGESENTENCEGenerator
+from .ko_nia_normal.generate import KoNiaGenerator
+from .mm_dialog.generate import mmDialogGenerator
+from .tl_text_entailment.generate import TlTextEntailmentGenerator
 from . import nikl
 
 ALL_TASKS = {
@@ -43,7 +46,15 @@ ALL_TASKS = {
     "kowow_dialog_passage": KOWOWDIALOGPASSAGEGenerator,
     "kowow_sentence_sentence": KOWOWSENTENCEPASSAGEGenerator,
     "kowow_sentence_topic": KOWOWSENTENCETOPICGenerator,
-    "kowow_passage_sentence": KOWOWPASSAGESENTENCEGenerator
+    "kowow_passage_sentence": KOWOWPASSAGESENTENCEGenerator,
+    "mms_spellcorrect":mmSpellCorrectGenerator,
+    "nikl_cb2020": nikl.CB2020Generator,
+    "ko_nia_normal": KoNiaGenerator,
+    "mm_spellcorrect":mmSpellCorrectGenerator,
+    "mm_dialog":mmDialogGenerator,
+    "nikl_cb2020": nikl.CB2020Generator,
+    "nikl_cb2021": nikl.CB2021Generatorv,
+    "tl_text_entailment": TlTextEntailmentGenerator
 }
 
 

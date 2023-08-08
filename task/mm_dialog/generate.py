@@ -1,49 +1,12 @@
 from task.base import BaseGenerator
-
 from datasets import load_dataset
 import random
 
 
-class mmSpellCorrectGenerator(BaseGenerator):
+class mmDialogGenerator(BaseGenerator):
     def __init__(self) -> None:
         super().__init__()
-        self.topicList = ['여행',
-            '미용과 건강',
-            '식음료',
-            '일과 직업',
-            '콘텐츠>게임 콘텐츠',
-            '콘텐츠',
-            '쇼핑과 상품',
-            '공연 및 관람>스포츠 경기 및 관람',
-            '콘텐츠>영상/음원 콘텐츠',
-            '가사 및 가족',
-            '콘텐츠>도서, 잡지',
-            '기타 사회 생활 및 활동',
-            '기타 사회 생활 및 활동>종교',
-            '연애와 결혼',
-            '공연 및 관람>공연/전시회 및 관람',
-            '일상 트렌드>콜라보레이션 마케팅(곰표, 진로 두꺼비 등)',
-            '날씨와 계절',
-            '반려동물',
-            '기타/일상',
-            '학교 생활',
-            '일상 트렌드',
-            '기타 사회 생활 및 활동>군대',
-            '공연 및 관람',
-            '시사(정치, 경제, 사회)',
-            '기타 사회 생활 및 활동>동호회/봉사 단체',
-            '기타 사회 생활 및 활동>온라인 커뮤니티',
-            '시사(정치, 경제, 사회)>추석 특별 방역 대책',
-            '일상 트렌드>파이어족 준비',
-            "시사(정치, 경제, 사회)>'위드 코로나' 단계적 전환",
-            '일상 트렌드>재택근무 일자리',
-            '일상 트렌드>싸이월드 부활',
-            '일상 트렌드>온라인 피트니스 서비스',
-            '시사(정치, 경제, 사회)>국세청 근로장려금 신청 접수',
-            '일상 트렌드>AI 학과 대세',
-            '시사(정치, 경제, 사회)>갤럭시 폴드3, 플립3 흥행 예고',
-            '일상 트렌드>메타버스(가상세계) 서비스',
-            '일상 트렌드>다회용 컵(리유저블컵) 할인 등 친환경 마케팅']
+        self.topicList = []
         self.instructions = [
             "대화 내용을 읽고 대화의 분야를 분류하세요.",
             "대화 내용에 적절한 토픽으로 분류해보세요.",
@@ -74,8 +37,9 @@ class mmSpellCorrectGenerator(BaseGenerator):
         ]
 
     def generate(self, split: str):
-        dataset = load_dataset("iknow-lab/mm_spellCheck", split='train', use_auth_token=True).shuffle(seed=42)
+        dataset = load_dataset("iknow-lab/mm_dialog", split='train', use_auth_token=True).shuffle(seed=42)
         dataset = dataset.train_test_split(test_size=0.1)[split]
+        self.topicList = list(set([x['topic'] for x in dataset]))
         for item in dataset:
             # 무작위로 instance를 고른다
             instruction = random.choice(self.instructions)

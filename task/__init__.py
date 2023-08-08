@@ -13,7 +13,12 @@ from .kobest_hellaswag.generate import KOBEST_HELLASWAGGenerator
 from .kobest_boolq.generate import KobestBoolqGenerator
 from .kobest_wic.generate import KobestWicGenerator
 from .niklex.generate import NIKLexGenerator
-from .mm_spellcorrect import mmSpellCorrectGenerator
+from .mm_spellcorrect.generate import mmSpellCorrectGenerator
+from .kowow_sentence_passage.generate import KOWOWSENTENCEPASSAGEGenerator
+from .kowow_dialog_passage.generate import KOWOWDIALOGPASSAGEGenerator
+from .kowow_dialog_topic.generate import KOWOWDIALOGTOPICGenerator
+from .kowow_sentence_topic.generate import KOWOWSENTENCETOPICGenerator
+from .kowow_passage_sentence.generate import KOWOWPASSAGESENTENCEGenerator
 from . import nikl
 
 ALL_TASKS = {
@@ -25,18 +30,20 @@ ALL_TASKS = {
     "klue_ynat": KlueYnatGenerator,
     "kor_nlu": KorNLUGenerator,
     "unsmile": UnSmileGenerator,
-    "klue_re":KlueReGenerator,
-    "kobest_copa":KOBEST_COPAGenerator,
-    "kobest_hellaswag":KOBEST_HELLASWAGGenerator,
-    "kobest_boolq":KobestBoolqGenerator,
-    "kobest_wic":KobestWicGenerator,
-    "niklex":NIKLexGenerator,
+    "klue_re": KlueReGenerator,
+    "kobest_copa": KOBEST_COPAGenerator,
+    "kobest_hellaswag": KOBEST_HELLASWAGGenerator,
+    "kobest_boolq": KobestBoolqGenerator,
+    "kobest_wic": KobestWicGenerator,
+    "niklex": NIKLexGenerator,
     "nikl_absa": nikl.ABSAGenerator,
-<<<<<<< HEAD
-    "mms_spellcorrect":mmSpellCorrectGenerator
-=======
-    "nikl_cb2020": nikl.CB2020Generator
->>>>>>> 2f4b7eeb628d64c1530911025aa8e07a1940d844
+    "mms_spellcorrect": mmSpellCorrectGenerator,
+    "nikl_cb2020": nikl.CB2020Generator,
+    "kowow_dialog_topic": KOWOWDIALOGTOPICGenerator,
+    "kowow_dialog_passage": KOWOWDIALOGPASSAGEGenerator,
+    "kowow_sentence_sentence": KOWOWSENTENCEPASSAGEGenerator,
+    "kowow_sentence_topic": KOWOWSENTENCETOPICGenerator,
+    "kowow_passage_sentence": KOWOWPASSAGESENTENCEGenerator
 }
 
 

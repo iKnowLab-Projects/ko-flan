@@ -23,6 +23,7 @@ from .ko_nia_normal.generate import KoNiaGenerator
 from .mm_dialog.generate import mmDialogGenerator
 from .tl_text_entailment.generate import TlTextEntailmentGenerator
 from . import nikl
+from .ko_relation_relation.generate import KO_RELATION_RELATIONGenerator
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
@@ -47,14 +48,15 @@ ALL_TASKS = {
     "kowow_sentence_sentence": KOWOWSENTENCEPASSAGEGenerator,
     "kowow_sentence_topic": KOWOWSENTENCETOPICGenerator,
     "kowow_passage_sentence": KOWOWPASSAGESENTENCEGenerator,
-    "mms_spellcorrect":mmSpellCorrectGenerator,
+    "mms_spellcorrect": mmSpellCorrectGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "ko_nia_normal": KoNiaGenerator,
-    "mm_spellcorrect":mmSpellCorrectGenerator,
-    "mm_dialog":mmDialogGenerator,
+    "mm_spellcorrect": mmSpellCorrectGenerator,
+    "mm_dialog": mmDialogGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
-    "nikl_cb2021": nikl.CB2021Generatorv,
-    "tl_text_entailment": TlTextEntailmentGenerator
+    "nikl_cb2021": nikl.CB2021Generator,
+    "tl_text_entailment": TlTextEntailmentGenerator,
+    "ko_relation_relation": KO_RELATION_RELATIONGenerator
 }
 
 

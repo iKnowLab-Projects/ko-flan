@@ -4,7 +4,7 @@ wandb/
 
 #testfile
 test*.ipynb
-
+ko_relation
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

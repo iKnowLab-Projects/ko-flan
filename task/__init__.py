@@ -22,8 +22,9 @@ from .kowow_passage_sentence.generate import KOWOWPASSAGESENTENCEGenerator
 from .ko_nia_normal.generate import KoNiaGenerator
 from .mm_dialog.generate import mmDialogGenerator
 from .tl_text_entailment.generate import TlTextEntailmentGenerator
-from . import nikl
+from . import nikl, aihub_mrc
 from .ko_relation_relation.generate import KO_RELATION_RELATIONGenerator
+
 
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
@@ -56,7 +57,9 @@ ALL_TASKS = {
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,
     "tl_text_entailment": TlTextEntailmentGenerator,
-    "ko_relation_relation": KO_RELATION_RELATIONGenerator
+    "ko_relation_relation": KO_RELATION_RELATIONGenerator,
+    "aihub_mrc_tech": aihub_mrc.tech.AIHubTechMRCGenerator,
+    "aihub_mrc_admin": aihub_mrc.admin.AIHubAdminMRCGenerator
 }
 
 

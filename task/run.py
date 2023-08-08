@@ -12,7 +12,7 @@ from pathlib import Path
 @click.option("--splits", default="train,test")
 @click.option("--tasks", default="*")
 @click.option("--output_dir", default="./data")
-@click.option("--max_instance_per_task", default=2000)
+@click.option("--max_instance_per_task", default=-1)
 def main(
     splits: str, tasks: str, output_dir: str, max_instance_per_task: Optional[int]
 ):

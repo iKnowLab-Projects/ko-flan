@@ -33,7 +33,7 @@ ALL_TASKS = {
     "klue_mrc": KLUE_MRCGenerator,
     "klue_nli": KLUE_NLIGenerator,
     "klue_ynat": KlueYnatGenerator,
-    "kor_nlu": KorNLUGenerator,
+    "kornlu_nli": KorNLUGenerator,
     "unsmile": UnSmileGenerator,
     "klue_re": KlueReGenerator,
     "kobest_copa": KOBEST_COPAGenerator,

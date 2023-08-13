@@ -47,13 +47,15 @@ class KOWOWPASSAGESENTENCEGenerator(BaseGenerator):
         for item in dataset:
             text = 'A :'+ item['context'] +" "+ 'B :'+ item["postive_passage"][0]
             pos = item['postive_sentence'][0]
-            neg = item['negative_sentence'][0]
+            
+            neg = item['negative_sentence']
+            neg = neg[0] if neg else []
             instruction = random.choice(self.instructions)
 
 
             yield {
                 "instruction": instruction,
                 "input": text,
-                "positives": pos,
-                "negatives": neg,
+                "positives": [pos],
+                "negatives": [neg],
             }

@@ -23,6 +23,9 @@ def handle_tech_mrc_item(item):
 
     for context_dict in item["dataset"]["context_info"]:
         context = html4text(context_dict["context"])
+        if len(context) == 0:
+            continue
+
         questions = context_dict["qas"]
         all_answers = set([qa["answer"] for qa in questions])
 

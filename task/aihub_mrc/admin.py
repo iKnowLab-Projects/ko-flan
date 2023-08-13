@@ -30,6 +30,9 @@ def handle_mrc_item(item):
         questions = paragraph["qas"]
         all_answers = set([qa["answers"]["text"] for qa in questions])
 
+        if len(all_answers) <= 1:
+            continue
+
         for qa in questions:
             pos = qa["answers"]["text"]
             impossible = qa.get("is_impossible", False)
@@ -45,13 +48,12 @@ def handle_mrc_item(item):
                 pos = [pos]
                 neg = list(all_answers - set(pos))
 
-            if len(questions) > 0:
-                outputs.append({
-                    "instruction": qa["question"],
-                    "input": context,
-                    "positives": pos,
-                    "negatives": neg,
-                })
+            outputs.append({
+                "instruction": qa["question"],
+                "input": context,
+                "positives": pos,
+                "negatives": neg,
+            })
 
     return outputs
 
@@ -62,8 +64,7 @@ class AIHubAdminMRCGenerator(BaseGenerator):
     def generate(self, split: str):
         dataset = load_dataset("iknow-lab/aihub_mrc_admin", split=split)
         # 일단 tableqa는 배제한다.
-        dataset = dataset.filter(lambda x: "tableqa" in x["file"])
+        dataset = dataset.filter(lambda x: "tableqa" not in x["file"])
         data = [json.loads(json_str) for json_str in dataset["content"]]
-
         for item in data:
             yield from handle_mrc_item(item)

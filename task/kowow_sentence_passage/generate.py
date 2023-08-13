@@ -49,7 +49,7 @@ class KOWOWSENTENCEPASSAGEGenerator(BaseGenerator):
 
         for item in dataset:
             text = item["context"]
-            pos = item['postive_passasge']
+            pos = item['postive_passage']
             neg = item['negative_passage']
             instruction = random.choice(self.instructions)
 

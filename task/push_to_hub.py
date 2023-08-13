@@ -12,8 +12,8 @@ def check_item(item):
     assert len(item["negatives"]) > 0
 
 @click.command()
-@click.argument("data_dir", default="data")
 @click.argument("hub_id")
+@click.argument("data_dir", default="data")
 @click.option("--public", default=False)
 def main(
     public: bool,

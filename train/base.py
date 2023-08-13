@@ -236,6 +236,7 @@ class BaseTrainer:
                         metrics["optimizer_step"] = optimizer_step
                         metrics["train/learning_rate"] = self.lr_scheduler.scheduler._last_lr[0]
                         metrics["train/loss"] = loss.item() * self.args.gradient_accumulation_steps
+                        metrics["epoch"] = epoch
                         self.accelerator.log(metrics)
                         print()
                         pprint(metrics)
@@ -300,6 +301,7 @@ class BaseTrainer:
             eval_outputs = collate_dictlist(eval_outputs)
             eval_results = self.collate_evaluation(eval_outputs)
             eval_results = {f"eval/{k}": v for k, v in eval_results.items()}
+            eval_results["epoch"] = epoch
             self.accelerator.log(eval_results)
 
         self.accelerator.wait_for_everyone()

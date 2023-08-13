@@ -195,14 +195,14 @@ class BaseTrainer:
 
         for epoch in tqdm(
             range(int(self.args.num_train_epochs)),
-            position=0,
+            position=1,
             disable=not self.accelerator.is_local_main_process,
         ):
             self.model.train()
             epoch_tqdm = tqdm(
                 self.train_dataloader,
                 disable=not self.accelerator.is_local_main_process,
-                position=1,
+                position=0,
                 leave=False,
             )
 
@@ -255,28 +255,27 @@ class BaseTrainer:
 
                     global_step += 1
 
-            if self.args.evaluation_strategy == "epoch" and epoch % self.args.save_epochs == 0:
-                if self.accelerator.is_main_process:
-                    self.save_model(f"epoch-{epoch}")
-                self.accelerator.wait_for_everyone()
+            if self.args.save_strategy == "epoch" and epoch % self.args.save_epochs == 0:
+                self.save_model(f"epoch-{epoch}")
 
             if self.args.do_eval and self.args.evaluation_strategy == "epoch":
                 self.evaluate(epoch, optimizer_step)
 
+
         if self.args.save_strategy == "last":
-            if self.accelerator.is_main_process:
-                self.save_model(f"epoch-{epoch}-last")
-            self.accelerator.wait_for_everyone()
+            self.save_model(f"epoch-{epoch}-last")
 
     def save_model(self, name):
         run_name = self.args.run_name.replace("/", "__")
         path = f"{self.args.output_dir}/{run_name}/{name}"
-        device = next(self.model.parameters()).device
         unwrapped_model = self.accelerator.unwrap_model(self.model).cpu()
-        unwrapped_model.save_pretrained(path)
-        self.tokenizer.save_pretrained(path)
 
-        unwrapped_model.to(device)
+        if self.accelerator.is_local_main_process:
+            unwrapped_model.save_pretrained(path)
+            self.tokenizer.save_pretrained(path)
+
+        unwrapped_model.to(self.accelerator.device)
+        self.accelerator.wait_for_everyone()
 
     @torch.no_grad()
     def evaluate(self, epoch, optimizer_step):

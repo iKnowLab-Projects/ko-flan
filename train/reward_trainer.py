@@ -24,7 +24,7 @@ class RewardModelArguments(BaseTrainingArguments):
 class RewardModelCollator(object):
 
     tokenizer: PreTrainedTokenizerBase
-    padding: Union[bool, str, PaddingStrategy] = "max_length"
+    padding: Union[bool, str, PaddingStrategy] = True
     max_length: Optional[int] = None
     truncation: bool = True
     pad_to_multiple_of: Optional[int] = None
@@ -70,10 +70,13 @@ class RewardTrainer(BaseTrainer):
         self.dataset = load_dataset(self.args.dataset)
         
         self.tokenizer.truncation_side = 'left'
+        tasks = set(self.dataset['train']["task"] + self.dataset['test']["task"])
+        self.task2id = {k: i for i, k in enumerate(tasks)}
+        self.id2task = {i: k for i, k in enumerate(tasks)}
 
         return {
             'train': self.dataset['train'],
-            'validation': self.dataset['test'] #.select(range(1000)),
+            'validation': self.dataset['test'],
         }
 
     def get_collator(self):
@@ -93,7 +96,7 @@ class RewardTrainer(BaseTrainer):
         return {
             "loss": loss, 
             "acc": acc,
-            "task": batch["task"]
+            "task": torch.tensor([self.task2id[k] for k in batch["task"]], dtype=torch.int32, device=loss.device)
         }
     
     def training_step(self, batch):
@@ -105,14 +108,11 @@ class RewardTrainer(BaseTrainer):
 
 
     def collate_evaluation(self, results: List[Dict]):
-        print(results)
-        losses = list(chain(*torch.stack(results['loss']).tolist()))
-        accuracies = list(chain(*torch.stack(results['acc']).tolist()))
-        tasks = list(chain(*results["task"]))
+        losses = torch.stack(results['loss']).reshape(-1).tolist()
+        accuracies = torch.stack(results['acc']).reshape(-1).tolist()
+        tasks = torch.stack(results['task']).reshape(-1).tolist()
+        tasks = [self.id2task[k] for k in tasks]
 
-        print(len(losses))
-        print(len(accuracies))
-        print(len(tasks))
 
         df = pd.DataFrame({
             "loss": losses,

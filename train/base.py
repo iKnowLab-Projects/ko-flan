@@ -20,10 +20,13 @@ from accelerate.logging import get_logger
 import os
 import evaluate
 from pprint import pprint
+
+import transformers
 from transformers import AutoModelForSequenceClassification, AutoModelForCausalLM, AutoConfig, AutoModelForTokenClassification, TrainingArguments
 
 
 MODEL_TYPES = {
+    "seq2seq": transformers.AutoModelForSeq2SeqLM,
     "sequence-classification": AutoModelForSequenceClassification,
     "token-classification": AutoModelForTokenClassification,
     "causal-lm": AutoModelForCausalLM,
@@ -71,7 +74,8 @@ class BaseTrainer:
         model_cls = MODEL_TYPES[args.model_type]
 
         kwargs = {}
-
+        print("load model", args.model_type, model_cls, args.model_name_or_path)
+        
         if args.model_type == "sequence-classification":
             kwargs["num_labels"] = args.num_labels
 

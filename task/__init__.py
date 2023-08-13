@@ -21,6 +21,7 @@ from .kowow_sentence_topic.generate import KOWOWSENTENCETOPICGenerator
 from .kowow_passage_sentence.generate import KOWOWPASSAGESENTENCEGenerator
 from .ko_nia_normal.generate import KoNiaGenerator
 from .mm_dialog.generate import mmDialogGenerator
+from .mm_2022dialogTopic import mm2022DialogTopic
 from .tl_text_entailment.generate import TlTextEntailmentGenerator
 from . import nikl, aihub_mrc, haerae
 from .ko_relation_relation.generate import KO_RELATION_RELATIONGenerator
@@ -53,6 +54,7 @@ ALL_TASKS = {
     "nikl_cb2020": nikl.CB2020Generator,
     "ko_nia_normal": KoNiaGenerator,
     "mm_spellcorrect": mmSpellCorrectGenerator,
+    "mm_2022dialogtopic" : mm2022DialogTopic,
     "mm_dialog": mmDialogGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,

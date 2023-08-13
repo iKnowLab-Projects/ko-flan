@@ -1,5 +1,27 @@
 # ko-flan
 
+## 설치
+python 3.10 기준의 환경입니다.<br/>
+먼저 pytorch gpu를 쓴다면 이거 아래를 명령어로 cuda용 pytorch를 설치합니다.
+```
+pip install torch --index-url https://download.pytorch.org/whl/cu118
+```
+
+이후 requirements.txt에 있는 것들 설치하기
+```
+pip install -r requirements.txt
+```
+
+그 외의 세팅들
+```
+# huggingface private dataset 접근을 위해
+huggingface-cli login --token 토큰
+
+# weight & bias login
+wandb login 토큰
+```
+
+
 ## 학습
 ### Reward Model
 ```bash
@@ -21,7 +43,7 @@ python -m train.reward_trainer \
 
 ## 실행방법
 
-루트 디렉터리에서 아래처럼 실행할 경우, 모든 테스크별로 2천개씩 data/폴더에 생성됩니다.
+루트 디렉터리에서 아래처럼 실행할 경우, 모든 테스크별의 모든 데이터가 data/폴더에 생성됩니다.
 ```
 python -m task.run
 ```
@@ -36,18 +58,12 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
 1. task/ 에 디렉터리를 만들고 .py 파일을 생성하세요
 2. task.base의 BaseGenerator를 상속하는 Generator 클래스를 만드세요.
 3. generate() 메서드에서 주어진 split(train or test)에 맞는 결과를 yield 하면 됩니다. generator 예제 참고: [task/nsmc/generate.py](./task/nsmc/generate.py)
-4. [task/__init__.py](task/__init__.py)안의 ALL_TASKS 에 구현한 generator class를 추가하세요.
+4. [task/\_\_init\_\_.py](task/__init__.py)안의 ALL_TASKS 에 구현한 generator class를 추가하세요.
 5. [task/run.py](task/run.py)를 실행하세요.  
 6. 결과가 기본적으로 data/ 폴더에 저장됩니다.
 
 
-각 Generator는 아래와 같은 형식의 dict를 반환해야 합니다. positives와 negatives의 개수는 task에 따라 다릅니다
-| task 유형 | positive 개수 | negative 개수 |
-| --- | --- | --- |
-| 이진분류 | 1 | 1 |
-| 멀티클래스 분류 | 1 | N |
-| 멀티라벨 분류 | N | N |
-| MRC | 1 | N |
+각 Generator는 아래와 같은 형식의 dict를 반환해야 합니다. positives와 negatives의 개수는 task에 따라 다르지만, 하나이거나 여러개가 되어도 상관 없습니다. negative는 반드시 있어야 할 필요는 없고, 최종적으로 dataset을 만들 때 필터링할 수 있습니다.
 
 예시 1. 이진 분류
 ```json
@@ -95,5 +111,5 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
 # 로그인 안했다면
 huggingface-cli login --token your_token
 
-python -m task.push_to_hub data/ iknow-lab/koflan-test-110k-0725
+python -m task.push_to_hub iknow-lab/koflan-test-110k-0725 data/ 
 ```

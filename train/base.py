@@ -12,6 +12,7 @@ from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 
 from datasets import disable_caching, load_dataset
+import accelerate
 from accelerate import Accelerator
 from tqdm.auto import tqdm
 from accelerate.logging import get_logger
@@ -30,12 +31,15 @@ MODEL_TYPES = {
 
 @dataclass
 class BaseTrainingArguments(TrainingArguments):
+    save_epochs: int = 1
+
     dataset: Optional[str] = None
     max_seq_length: int = 512
     project: str = "ko-flan"
     model_name_or_path: str = ""
     tokenizer_name: Optional[str] = None
     num_labels: int = 1
+
     config_name: Optional[str] = None
     revision: Optional[str] = None
     from_flax: bool = False
@@ -117,16 +121,6 @@ class BaseTrainer:
         total_steps = int(self.args.num_train_epochs * steps_per_epoch)
         optimizer = optim.AdamW(self.model.parameters(), lr=self.args.learning_rate)
 
-        # lr_scheduler = torch.optim.lr_scheduler.OneCycleLR(
-        #     optimizer,
-        #     max_lr=self.args.learning_rate,
-        #     steps_per_epoch=steps_per_epoch,
-        #     epochs=self.args.num_train_epochs,
-        #     anneal_strategy="linear",
-        #     pct_start=0.01,
-        #     div_factor=10,
-        #     final_div_factor=10,
-        # )
         lr_scheduler = None
 
         if self.args.lr_scheduler_type == "linear":
@@ -213,18 +207,17 @@ class BaseTrainer:
             )
 
             for step, batch in enumerate(epoch_tqdm):
-                step_output = self.training_step(batch)
-                if torch.is_tensor(step_output):
-                    loss = step_output
-                else:
-                    loss = step_output['loss']
-                loss = loss / self.args.gradient_accumulation_steps
-                self.accelerator.backward(loss)
+                with self.accelerator.accumulate(self.model):
+                    step_output = self.training_step(batch)
+                    if torch.is_tensor(step_output):
+                        loss = step_output
+                    else:
+                        loss = step_output['loss']
 
-                if (global_step + 1) % self.args.gradient_accumulation_steps == 0:
                     if self.accelerator.sync_gradients:
                         self.accelerator.clip_grad_norm_(self.model.parameters(), 1.0)
 
+                    self.accelerator.backward(loss)
                     self.optimizer.step()
                     self.lr_scheduler.step()
                     self.optimizer.zero_grad()
@@ -234,7 +227,7 @@ class BaseTrainer:
                     if (
                         self.accelerator.is_main_process
                         and optimizer_step % self.args.logging_steps == 0
-                    ):  
+                    ):
                         if torch.is_tensor(step_output):
                             metrics = {"train/loss": step_output.item()}
                         else:
@@ -259,9 +252,9 @@ class BaseTrainer:
                     ):
                         self.evaluate(epoch, optimizer_step)
 
-                global_step += 1
+                    global_step += 1
 
-            if self.args.evaluation_strategy == "epoch":
+            if self.args.evaluation_strategy == "epoch" and epoch % self.args.save_epochs == 0:
                 if self.accelerator.is_main_process:
                     self.save_model(f"epoch-{epoch}")
                 self.accelerator.wait_for_everyone()
@@ -321,9 +314,14 @@ class BaseTrainer:
 
         set_seed(args.seed)
 
-        accelerator = Accelerator()
         os.environ["WANDB_NAME"] = args.run_name
-        accelerator = Accelerator(log_with="wandb")
+        accelerator = Accelerator(
+            log_with="wandb",
+            kwargs_handlers=[
+                accelerate.DistributedDataParallelKwargs(broadcast_buffers=False,)
+            ],
+            gradient_accumulation_steps=args.gradient_accumulation_steps
+            )
         accelerator.init_trackers(
             args.project,
             config=args

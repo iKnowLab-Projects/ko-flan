@@ -7,6 +7,7 @@ from .base import BaseTrainer, BaseTrainingArguments, collate_dictlist
 from itertools import chain
 
 import torch
+import torch.nn.functional as F
 
 import pandas as pd
 from pprint import pprint
@@ -83,11 +84,11 @@ class RewardTrainer(BaseTrainer):
             padding="max_length",
             return_tensors="pt",
         )
-
+    
     def _shared_step(self, batch):
-        pos = self.model(**batch["positives"]).logits[:, 0]
-        neg = self.model(**batch["negatives"]).logits[:, 0]
-        loss = (neg - pos).sigmoid()
+        pos = self.model(**batch["positives"]).logits#[:, 0]
+        neg = self.model(**batch["negatives"]).logits#[:, 0]
+        loss = -F.logsigmoid(pos - neg)
         acc = pos > neg
         return {
             "loss": loss, 

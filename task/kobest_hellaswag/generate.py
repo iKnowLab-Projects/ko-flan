@@ -34,7 +34,7 @@ class KOBEST_HELLASWAGGenerator(BaseGenerator):
         ]
 
     def generate(self, split: str):
-        dataset = load_dataset('skt/kobest_v1','hellaswag', split="test")
+        dataset = load_dataset('skt/kobest_v1','hellaswag', split=split)
         for item in dataset:
             label  = item["label"]
             text = item["context"]

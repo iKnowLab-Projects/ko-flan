@@ -22,7 +22,7 @@ from .kowow_passage_sentence.generate import KOWOWPASSAGESENTENCEGenerator
 from .ko_nia_normal.generate import KoNiaGenerator
 from .mm_dialog.generate import mmDialogGenerator
 from .tl_text_entailment.generate import TlTextEntailmentGenerator
-from . import nikl, aihub_mrc
+from . import nikl, aihub_mrc, haerae
 from .ko_relation_relation.generate import KO_RELATION_RELATIONGenerator
 
 
@@ -59,7 +59,8 @@ ALL_TASKS = {
     "tl_text_entailment": TlTextEntailmentGenerator,
     "ko_relation_relation": KO_RELATION_RELATIONGenerator,
     "aihub_mrc_tech": aihub_mrc.tech.AIHubTechMRCGenerator,
-    "aihub_mrc_admin": aihub_mrc.admin.AIHubAdminMRCGenerator
+    "aihub_mrc_admin": aihub_mrc.admin.AIHubAdminMRCGenerator,
+    "haerae_csatqa": haerae.csatqa.CSATQAGenerator
 }
 
 

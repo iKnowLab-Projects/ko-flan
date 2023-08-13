@@ -67,17 +67,18 @@ class SplitGenerator:
         return items
     
     def write_task(self, task, generator_cls):
-        with jsonlines.open(Path(self.output_dir, self.split, f"{task}.json"), "w") as fout:
-            generator = generator_cls()
-            items = self.map_generator(generator, self.split, task)
-            
-            if self.max_instance_per_task > 0 and len(items) >= self.max_instance_per_task:
-                items = random.choices(items, k=self.max_instance_per_task)
+        generator = generator_cls()
+        items = self.map_generator(generator, self.split, task)
+        
+        if self.max_instance_per_task > 0 and len(items) >= self.max_instance_per_task:
+            items = random.choices(items, k=self.max_instance_per_task)
 
-            for item in items:
-                fout.write(item)
+        if len(items) > 0:
+            with jsonlines.open(Path(self.output_dir, self.split, f"{task}.json"), "w") as fout:
+                for item in items:
+                    fout.write(item)
 
-            self.tqdm.update.remote()
+        self.tqdm.update.remote()
 
         return task, len(items)
     

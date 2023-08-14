@@ -25,6 +25,7 @@ from .mm_dialog.generate import mmDialogGenerator
 from .tl_text_entailment.generate import TlTextEntailmentGenerator
 from . import nikl, aihub_mrc, haerae
 from .ko_relation_relation.generate import KO_RELATION_RELATIONGenerator
+from .kor_nli.generate import KorNLIGenerator
 
 
 ALL_TASKS = {
@@ -63,6 +64,7 @@ ALL_TASKS = {
     "aihub_mrc_tech": aihub_mrc.tech.AIHubTechMRCGenerator,
     "aihub_mrc_admin": aihub_mrc.admin.AIHubAdminMRCGenerator,
     "haerae_csatqa": haerae.csatqa.CSATQAGenerator,
+    "kor_nli": KorNLIGenerator
 }
 
 

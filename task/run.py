@@ -11,8 +11,7 @@ import ray
 import psutil
 
 
-@ray.remote
-class ParallelTqdm:
+class Tqdm:
 
     def __init__(self, total: int) -> None:
         self.tqdm_task = tqdm(total=total, leave=False, position=0)
@@ -21,6 +20,10 @@ class ParallelTqdm:
         self.tqdm_task.update(n)
 
 @ray.remote
+class ParallelTqdm(Tqdm):
+    pass
+
+
 class SplitGenerator:        
     def __init__(self, tqdm, split, max_instance_per_task, output_dir, require_negative) -> None:
         self.split = split
@@ -78,14 +81,18 @@ class SplitGenerator:
                 for item in items:
                     fout.write(item)
 
-        self.tqdm.update.remote()
+        self.update_progress()
 
         return task, len(items)
-    
-    def write_all_tasks(self, all_tasks):
-        futures = [self.write_task.remote(task, generator_cls) for task, generator_cls in all_tasks.items()]
-        split_detail = dict(ray.get(futures))
-        return split_detail
+
+    def update_progress(self):
+        self.tqdm.update(1)
+        
+@ray.remote
+class ParallelSplitGenerator(SplitGenerator):
+
+    def update_progress(self):
+        self.tqdm.update.remote(1)
 
 
 @click.command()
@@ -95,14 +102,17 @@ class SplitGenerator:
 @click.option("--max_instance_per_task", default=-1)
 @click.option("--require_negative/--allow_no_negative", default=True)
 @click.option("--num_proc", default=0, help="number of parallel ray processes, 0 to max cpu")
+@click.option("--use-ray/--no-ray", default=False, help="do not use ray")
 def main(
     splits: str, tasks: str, output_dir: str, max_instance_per_task: Optional[int],
-    num_proc: int, require_negative: bool
+    num_proc: int, require_negative: bool, use_ray: bool
 ):
-    if num_proc == 0:
-        num_proc = psutil.cpu_count()
-    ray.init(num_cpus=num_proc)
-    print("num_cpus", num_proc)
+    if use_ray:
+        if num_proc == 0:
+            num_proc = psutil.cpu_count()
+        ray.init(num_cpus=num_proc)
+        print("num_cpus", num_proc)
+
 
     splits = splits.split(",")
     all_tasks = dict()
@@ -120,21 +130,38 @@ def main(
             "tasks": ",".join(list(all_tasks.keys())),
             "max_instance_per_task": max_instance_per_task,
         }
-        tqdm_task = ParallelTqdm.remote(len(all_tasks))
+        if use_ray:
+            tqdm_task = ParallelTqdm.remote(len(all_tasks))
+        else:
+            tqdm_task = Tqdm(len(all_tasks))
 
         futures = []
         for task, generator_cls in all_tasks.items():
-            generator = SplitGenerator.remote(
-                tqdm=tqdm_task,
-                split=split,
-                output_dir=output_dir,
-                require_negative=require_negative,
-                max_instance_per_task=max_instance_per_task
-                )
-            futures.append(generator.write_task.remote(task, generator_cls))
+            if use_ray:
+                generator = ParallelSplitGenerator.remote(
+                    tqdm=tqdm_task,
+                    split=split,
+                    output_dir=output_dir,
+                    require_negative=require_negative,
+                    max_instance_per_task=max_instance_per_task
+                    )
+                futures.append(generator.write_task.remote(task, generator_cls))
 
-        split_detail = ray.get(futures)
-        print(split, split_detail)
+            else:
+                generator = SplitGenerator(
+                    tqdm=tqdm_task,
+                    split=split,
+                    output_dir=output_dir,
+                    require_negative=require_negative,
+                    max_instance_per_task=max_instance_per_task
+                    )
+                futures.append(generator.write_task(task, generator_cls))
+
+        if use_ray:
+            split_detail = ray.get(futures)
+        else:
+            split_detail = futures
+
         split_detail = dict(split_detail)
 
         details["split_" + split] = split_detail

@@ -59,12 +59,14 @@ class Seq2SeqCollator(object):
             truncation=self.truncation,
             return_tensors=self.return_tensors,
         )
+        labels = decoder_inputs["input_ids"][:, 1:]
+        labels = labels.masked_fill(labels == self.tokenizer.pad_token_id, -100)
 
         return {
             "model_inputs": {
                 "decoder_input_ids": decoder_inputs["input_ids"][:, :-1],
                 "decoder_attention_mask": decoder_inputs["attention_mask"][:, :-1],
-                "labels": decoder_inputs["input_ids"][:, 1:],
+                "labels": labels,
                 **encoder_inputs   
             },
             **features
@@ -88,7 +90,7 @@ class Seq2SeqTrainer(BaseTrainer):
             tokenizer=self.tokenizer,
             max_length=self.args.max_seq_length ,
             pad_to_multiple_of=8,
-            padding="max_length",
+            padding=True,
             return_tensors="pt",
         )
     

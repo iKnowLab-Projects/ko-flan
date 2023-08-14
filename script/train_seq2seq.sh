@@ -5,7 +5,7 @@ accelerate launch -m train.s2s_trainer \
     --run_name ke-t5-small-0813 \
     --model_name_or_path KETI-AIR/ke-t5-small \
     --model_type seq2seq \
-    --dataset iknow-lab/koflan-0813 \
+    --dataset iknow-lab/koflan-0731 \
     --logging_steps 100 \
     --per_device_train_batch_size 8 \
     --num_train_epochs 10 \

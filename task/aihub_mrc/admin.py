@@ -14,9 +14,11 @@ def check_label(negative: str, positives: List[str]):
 
     return True
 
+
 def html4text(html):
     soup = BeautifulSoup(html, "lxml")
     return soup.get_text()
+
 
 def handle_mrc_item(item):
     POS = ["예", "맞습니다", "그렇습니다", "일치합니다", "정답입니다."]
@@ -38,7 +40,7 @@ def handle_mrc_item(item):
             impossible = qa.get("is_impossible", False)
 
             if impossible:
-                neg = [pos] # 대답 불가능한 질문은 기존 positive 정답을 negative로 준다
+                neg = [pos]  # 대답 불가능한 질문은 기존 positive 정답을 negative로 준다
                 pos = UNK
             elif pos == "Yes":
                 pos, neg = POS, NEG
@@ -48,14 +50,17 @@ def handle_mrc_item(item):
                 pos = [pos]
                 neg = list(all_answers - set(pos))
 
-            outputs.append({
-                "instruction": qa["question"],
-                "input": context,
-                "positives": pos,
-                "negatives": neg,
-            })
+            outputs.append(
+                {
+                    "instruction": qa["question"],
+                    "input": context,
+                    "positives": pos,
+                    "negatives": neg,
+                }
+            )
 
     return outputs
+
 
 class AIHubAdminMRCGenerator(BaseGenerator):
     def __init__(self) -> None:

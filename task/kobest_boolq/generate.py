@@ -10,18 +10,17 @@ class KobestBoolqGenerator(BaseGenerator):
         self.negatives = ["틀립니다", "아니요", "아니다", "아닙니다"]
 
     def generate(self, split: str):
-
         dataset = load_dataset("skt/kobest_v1", "boolq", split=split)
 
         for item in dataset:
             instruction = item["question"]
             input = item["paragraph"]
-            
-            if item["label"] == 1: # true
+
+            if item["label"] == 1:  # true
                 pos, neg = self.positives, self.negatives
             else:
                 pos, neg = self.negatives, self.positives
-                
+
             yield {
                 "instruction": instruction,
                 "input": input,

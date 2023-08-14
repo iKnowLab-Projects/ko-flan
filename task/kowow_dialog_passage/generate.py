@@ -40,16 +40,16 @@ class KOWOWDIALOGPASSAGEGenerator(BaseGenerator):
             "대화의 주제를 이해하고 관련된 문장을 작성하세요.",
             "대화 내용을 분석하고 주제에 맞는 문장을 생성하십시오.",
             "이 대화를 듣고 주제와 연관된 문장을 작성하시오.",
-            "대화를 읽고 주제와 관련된 문장을 작성해 보세요."
+            "대화를 읽고 주제와 관련된 문장을 작성해 보세요.",
         ]
 
     def generate(self, split: str):
-        dataset = load_dataset('iknow-lab/kowow_dialog',split=split)
+        dataset = load_dataset("iknow-lab/kowow_dialog", split=split)
 
         for item in dataset:
             text = item["context"]
-            pos = item['postive_passage']
-            neg = item['negative_passage']
+            pos = item["postive_passage"]
+            neg = item["negative_passage"]
             instruction = random.choice(self.instructions)
 
             yield {

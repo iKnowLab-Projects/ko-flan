@@ -22,7 +22,13 @@ import evaluate
 from pprint import pprint
 
 import transformers
-from transformers import AutoModelForSequenceClassification, AutoModelForCausalLM, AutoConfig, AutoModelForTokenClassification, TrainingArguments
+from transformers import (
+    AutoModelForSequenceClassification,
+    AutoModelForCausalLM,
+    AutoConfig,
+    AutoModelForTokenClassification,
+    TrainingArguments,
+)
 
 
 MODEL_TYPES = {
@@ -31,6 +37,7 @@ MODEL_TYPES = {
     "token-classification": AutoModelForTokenClassification,
     "causal-lm": AutoModelForCausalLM,
 }
+
 
 @dataclass
 class BaseTrainingArguments(TrainingArguments):
@@ -60,6 +67,7 @@ def collate_dictlist(dl):
 
     return out
 
+
 class BaseTrainer:
     def __init__(self, accelerator: Accelerator, args: BaseTrainingArguments) -> None:
         super().__init__()
@@ -75,7 +83,7 @@ class BaseTrainer:
 
         kwargs = {}
         print("load model", args.model_type, model_cls, args.model_name_or_path)
-        
+
         if args.model_type == "sequence-classification":
             kwargs["num_labels"] = args.num_labels
 
@@ -87,11 +95,11 @@ class BaseTrainer:
                 args.model_name_or_path,
                 revision=args.revision,
                 from_flax=args.from_flax,
-                **kwargs
-                )
+                **kwargs,
+            )
         else:
             raise Exception("config_name or model_name_or_path 가 지정되어야 합니다.")
-    
+
         return model
 
     def get_tokenizer(self, args):
@@ -110,15 +118,12 @@ class BaseTrainer:
 
         datasets = self.prepare_dataset()
 
-        self.train_dataloader = self._create_dataloader(
-            datasets.get('train'),
-            True
-        )
+        self.train_dataloader = self._create_dataloader(datasets.get("train"), True)
         self.eval_dataloader = self._create_dataloader(
-            datasets.get('validation'),
+            datasets.get("validation"),
         )
 
-        steps_per_epoch = len(datasets.get('train')) / (
+        steps_per_epoch = len(datasets.get("train")) / (
             self.args.per_device_train_batch_size
             * self.args.gradient_accumulation_steps
         )
@@ -129,17 +134,20 @@ class BaseTrainer:
 
         if self.args.lr_scheduler_type == "linear":
             lr_scheduler = transformers.get_linear_schedule_with_warmup(
-                optimizer, 
-                self.args.warmup_steps if self.args.warmup_steps > 0 else int(total_steps * self.args.warmup_ratio),
-                total_steps
-                )
+                optimizer,
+                self.args.warmup_steps
+                if self.args.warmup_steps > 0
+                else int(total_steps * self.args.warmup_ratio),
+                total_steps,
+            )
         elif self.args.lr_scheduler_type == "cosine":
             lr_scheduler = transformers.get_cosine_schedule_with_warmup(
-                optimizer, 
-                self.args.warmup_steps if self.args.warmup_steps > 0 else int(total_steps * self.args.warmup_ratio),
-                total_steps
-                )
-
+                optimizer,
+                self.args.warmup_steps
+                if self.args.warmup_steps > 0
+                else int(total_steps * self.args.warmup_ratio),
+                total_steps,
+            )
 
         (
             self.model,
@@ -148,7 +156,11 @@ class BaseTrainer:
             self.lr_scheduler,
             self.eval_dataloader,
         ) = self.accelerator.prepare(
-            self.model, optimizer, self.train_dataloader, lr_scheduler, self.eval_dataloader
+            self.model,
+            optimizer,
+            self.train_dataloader,
+            lr_scheduler,
+            self.eval_dataloader,
         )
 
         self.accelerator.register_for_checkpointing(lr_scheduler)
@@ -161,19 +173,19 @@ class BaseTrainer:
 
     def training_step(self, batch):
         """
-            return loss
+        return loss
         """
         pass
 
     def evaluation_step(self, batch):
         """
-            return dict
+        return dict
         """
         pass
 
     def collate_evaluation(self, results: List[Dict]):
         """
-            return dict(metric)
+        return dict(metric)
         """
         return None
 
@@ -184,14 +196,14 @@ class BaseTrainer:
         kwargs = {}
         collator = self.get_collator()
         if collator is not None:
-            kwargs['collate_fn'] = collator
+            kwargs["collate_fn"] = collator
 
         return DataLoader(
             dataset,
             batch_size=self.args.per_device_train_batch_size,
             shuffle=shuffle,
-            **kwargs
-            )
+            **kwargs,
+        )
 
     def train(self):
         global_step = 0
@@ -216,7 +228,7 @@ class BaseTrainer:
                     if torch.is_tensor(step_output):
                         loss = step_output
                     else:
-                        loss = step_output['loss']
+                        loss = step_output["loss"]
 
                     if self.accelerator.sync_gradients:
                         self.accelerator.clip_grad_norm_(self.model.parameters(), 1.0)
@@ -235,11 +247,17 @@ class BaseTrainer:
                         if torch.is_tensor(step_output):
                             metrics = {"train/loss": step_output.item()}
                         else:
-                            metrics = {f"train/{k}": v.item() for k, v in step_output.items()}
+                            metrics = {
+                                f"train/{k}": v.item() for k, v in step_output.items()
+                            }
 
                         metrics["optimizer_step"] = optimizer_step
-                        metrics["train/learning_rate"] = self.lr_scheduler.scheduler._last_lr[0]
-                        metrics["train/loss"] = loss.item() * self.args.gradient_accumulation_steps
+                        metrics[
+                            "train/learning_rate"
+                        ] = self.lr_scheduler.scheduler._last_lr[0]
+                        metrics["train/loss"] = (
+                            loss.item() * self.args.gradient_accumulation_steps
+                        )
                         metrics["epoch"] = epoch
                         self.accelerator.log(metrics)
                         print()
@@ -259,12 +277,14 @@ class BaseTrainer:
 
                     global_step += 1
 
-            if self.args.save_strategy == "epoch" and epoch % self.args.save_epochs == 0:
+            if (
+                self.args.save_strategy == "epoch"
+                and epoch % self.args.save_epochs == 0
+            ):
                 self.save_model(f"epoch-{epoch}")
 
             if self.args.do_eval and self.args.evaluation_strategy == "epoch":
                 self.evaluate(epoch, optimizer_step)
-
 
         if self.args.save_strategy == "last":
             self.save_model(f"epoch-{epoch}-last")
@@ -312,9 +332,7 @@ class BaseTrainer:
 
     @classmethod
     def main(trainer_cls, arg_cls: BaseTrainingArguments):
-        parser = HfArgumentParser(
-            (arg_cls,)
-        )
+        parser = HfArgumentParser((arg_cls,))
         args = parser.parse_args()
 
         set_seed(args.seed)
@@ -323,14 +341,13 @@ class BaseTrainer:
         accelerator = Accelerator(
             log_with="wandb",
             kwargs_handlers=[
-                accelerate.DistributedDataParallelKwargs(broadcast_buffers=False,)
+                accelerate.DistributedDataParallelKwargs(
+                    broadcast_buffers=False,
+                )
             ],
-            gradient_accumulation_steps=args.gradient_accumulation_steps
-            )
-        accelerator.init_trackers(
-            args.project,
-            config=args
+            gradient_accumulation_steps=args.gradient_accumulation_steps,
         )
+        accelerator.init_trackers(args.project, config=args)
         trainer = trainer_cls(accelerator, args)
         trainer.setup()
         if args.do_train:

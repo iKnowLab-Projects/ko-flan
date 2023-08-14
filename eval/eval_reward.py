@@ -22,6 +22,7 @@ from torch.utils.data import DataLoader
 def _is_json_task(task_name):
     return task_name == "json" or task_name.startswith("json=")
 
+
 def pattern_match(patterns, source_list):
     task_names = set()
     for pattern in patterns:
@@ -34,10 +35,9 @@ def pattern_match(patterns, source_list):
 
 
 class LMEvalHarnessInterface(LM):
-
     def __init__(self, model_name, batch_size: int, device: str):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.tokenizer.truncation_side = 'left'
+        self.tokenizer.truncation_side = "left"
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name)
         self.batch_size = batch_size
         self.device = device
@@ -73,13 +73,15 @@ class LMEvalHarnessInterface(LM):
         for batch in self._iter_batch(inputs):
             prefix, text = zip(*batch)
             print(prefix, text)
-            inputs = self.tokenizer(batch, return_tensors="pt", truncation=True).to(self.device)
+            inputs = self.tokenizer(batch, return_tensors="pt", truncation=True).to(
+                self.device
+            )
 
             scores = self.model(**inputs).logits[:, 0].tolist()
             ll.extend(scores)
 
         return list(zip(ll, [False] * len(ll)))
-    
+
 
 @click.command()
 @click.argument("task", type=str)
@@ -87,23 +89,23 @@ class LMEvalHarnessInterface(LM):
 @click.option("--limit", default=0)
 @click.option("--batch_size", default=8)
 def main(task: str, model: str, limit: int, batch_size: int):
-
     model = LMEvalHarnessInterface(model, batch_size, "cuda:0")
 
-    task_list = pattern_match(task.split(','), ALL_TASKS)
-    print("tasks", task, "->", task_list) #, "in", ALL_TASKS)
+    task_list = pattern_match(task.split(","), ALL_TASKS)
+    print("tasks", task, "->", task_list)  # , "in", ALL_TASKS)
 
     print("eval results")
     results = evaluator.simple_evaluate(
-        model, 
+        model,
         model_args="",
         tasks=get_task_dict(task_list),
         no_cache=True,
         num_fewshot=0,
         device="cuda:0",
-        limit=None if limit <= 0 else limit
+        limit=None if limit <= 0 else limit,
     )
     pprint.pprint(results)
+
 
 """
 pip install git+https://github.com/EleutherAI/lm-evaluation-harness.git@polyglot
@@ -111,6 +113,3 @@ python -m eval.eval_reward "kobest_*" checkpoint/koflan-base-0731/epoch-9
 """
 if __name__ == "__main__":
     main()
-
-
-

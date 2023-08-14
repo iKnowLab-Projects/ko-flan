@@ -19,26 +19,31 @@ from transformers.utils import PaddingStrategy
 
 @dataclass
 class Seq2SeqArguments(BaseTrainingArguments):
-    
     def __post_init__(self):
         super().__post_init__()
 
+
 @dataclass
 class Seq2SeqCollator(object):
-
     tokenizer: PreTrainedTokenizerBase
     padding: Union[bool, str, PaddingStrategy] = True
     max_length: Optional[int] = None
     truncation: bool = True
     pad_to_multiple_of: Optional[int] = None
     return_tensors: str = "pt"
-    
+
     def __call__(self, features: List[Dict[str, Any]]) -> Dict[str, Any]:
         features = collate_dictlist(features)
         labels = [random.choice(x) for x in features["positives"]]
-        labels = [self.tokenizer.bos_token + label + self.tokenizer.eos_token for label in labels]
-        input_ids = [instruction + "\n" + input for input, instruction in zip(features["input"], features["instruction"])]
-        
+        labels = [
+            self.tokenizer.bos_token + label + self.tokenizer.eos_token
+            for label in labels
+        ]
+        input_ids = [
+            instruction + "\n" + input
+            for input, instruction in zip(features["input"], features["instruction"])
+        ]
+
         encoder_inputs = self.tokenizer(
             input_ids,
             padding=self.padding,
@@ -67,37 +72,37 @@ class Seq2SeqCollator(object):
                 "decoder_input_ids": decoder_inputs["input_ids"][:, :-1],
                 "decoder_attention_mask": decoder_inputs["attention_mask"][:, :-1],
                 "labels": labels,
-                **encoder_inputs   
+                **encoder_inputs,
             },
-            **features
+            **features,
         }
-    
+
+
 class Seq2SeqTrainer(BaseTrainer):
-    
     def prepare_dataset(self):
         self.dataset = load_dataset(self.args.dataset)
-        
+
         if self.tokenizer.bos_token_id is None:
             self.tokenizer.bos_token_id = self.tokenizer.eos_token_id
 
         return {
-            'train': self.dataset['train'],
-            'validation': self.dataset['test'] #.select(range(50)),
+            "train": self.dataset["train"],
+            "validation": self.dataset["test"],  # .select(range(50)),
         }
 
     def get_collator(self):
         return Seq2SeqCollator(
             tokenizer=self.tokenizer,
-            max_length=self.args.max_seq_length ,
+            max_length=self.args.max_seq_length,
             pad_to_multiple_of=8,
             padding=True,
             return_tensors="pt",
         )
-    
+
     def _shared_step(self, batch):
         loss = self.model(**batch["model_inputs"]).loss
         return loss
-    
+
     def training_step(self, batch):
         loss = self._shared_step(batch)
         return loss.mean()
@@ -105,14 +110,11 @@ class Seq2SeqTrainer(BaseTrainer):
     def evaluation_step(self, batch):
         return self._shared_step(batch)
 
-
     def collate_evaluation(self, results: List[Dict]):
-        loss = torch.stack(results['loss']).mean().item()
-        eval_results = {
-            "loss": loss
-        }
+        loss = torch.stack(results["loss"]).mean().item()
+        eval_results = {"loss": loss}
         return eval_results
-    
+
 
 if __name__ == "__main__":
     Seq2SeqTrainer.main(Seq2SeqArguments)

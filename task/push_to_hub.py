@@ -11,20 +11,19 @@ def check_item(item):
     assert len(item["positives"]) > 0
     assert len(item["negatives"]) > 0
 
+
 @click.command()
 @click.argument("hub_id")
 @click.argument("data_dir", default="data")
 @click.option("--public", default=False)
-def main(
-    public: bool,
-    data_dir: str,
-    hub_id: str
-    ):
-    ds = load_dataset("json", data_files={
-        "train": f"{data_dir}/train/*.json",
-        "test": f"{data_dir}/test/*.json"
-    })
-
+def main(public: bool, data_dir: str, hub_id: str):
+    ds = load_dataset(
+        "json",
+        data_files={
+            "train": f"{data_dir}/train/*.json",
+            "test": f"{data_dir}/test/*.json",
+        },
+    )
 
     for split in ["train", "test"]:
         for item in tqdm(ds[split], desc=f"checking {split}"):

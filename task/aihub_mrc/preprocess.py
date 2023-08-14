@@ -6,10 +6,10 @@ import random
 import os
 
 
-
 def html4text(html):
     soup = BeautifulSoup(html)
     return soup.get_text()
+
 
 def handle_tech_mrc_item(item):
     outputs = []
@@ -54,4 +54,3 @@ def admin_mrc():
 if __name__ == "__main__":
     # tech_mrc()
     admin_mrc()
-            

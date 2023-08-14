@@ -14,9 +14,11 @@ def check_label(negative: str, positives: List[str]):
 
     return True
 
+
 def html4text(html):
     soup = BeautifulSoup(html, "lxml")
     return soup.get_text()
+
 
 def handle_tech_mrc_item(item):
     outputs = []
@@ -30,7 +32,6 @@ def handle_tech_mrc_item(item):
         all_answers = set([qa["answer"] for qa in questions])
 
         for qa in questions:
-            
             type = qa["answer_type"]
             pos = [qa["answer"]]
 
@@ -43,19 +44,21 @@ def handle_tech_mrc_item(item):
                 neg = list(all_answers - set(pos))
 
             questions = [
-                x for x in [qa["question-1"], qa["question-2"]]
-                if x is not None
+                x for x in [qa["question-1"], qa["question-2"]] if x is not None
             ]
-            
+
             if len(questions) > 0:
-                outputs.append({
-                    "instruction": random.choice(questions),
-                    "input": context,
-                    "positives": pos,
-                    "negatives": neg,
-                })
+                outputs.append(
+                    {
+                        "instruction": random.choice(questions),
+                        "input": context,
+                        "positives": pos,
+                        "negatives": neg,
+                    }
+                )
 
     return outputs
+
 
 class AIHubTechMRCGenerator(BaseGenerator):
     def __init__(self) -> None:

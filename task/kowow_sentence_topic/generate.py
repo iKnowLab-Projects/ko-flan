@@ -40,18 +40,16 @@ class KOWOWSENTENCETOPICGenerator(BaseGenerator):
             "문장의 내용을 분석하고 중심 주제를 찾으시오.",
             "문장을 듣고 주요 테마를 식별하십시오.",
             "주어진 텍스트를 분석하고 관련된 주제를 찾으세요.",
-            "문장을 분석하고 알맞은 토픽 주제를 작성하시오."
+            "문장을 분석하고 알맞은 토픽 주제를 작성하시오.",
         ]
 
     def generate(self, split: str):
-
-        dataset = load_dataset("iknow-lab/kowow",  split=split)
-
+        dataset = load_dataset("iknow-lab/kowow", split=split)
 
         for item in dataset:
             text = item["context"]
-            pos = item['postive_topic'][0]
-            neg = item['negatvie_topic'][0]
+            pos = item["postive_topic"][0]
+            neg = item["negatvie_topic"][0]
             instruction = random.choice(self.instructions)
 
             yield {

@@ -7,7 +7,18 @@ class UnSmileGenerator(BaseGenerator):
     def __init__(self) -> None:
         super().__init__()
 
-        self.labels = ["여성/가족", "남성", "성소수자", "인종/국적", "연령", "지역", "종교", "기타 혐오", "악플/욕설", "없다"]
+        self.labels = [
+            "여성/가족",
+            "남성",
+            "성소수자",
+            "인종/국적",
+            "연령",
+            "지역",
+            "종교",
+            "기타 혐오",
+            "악플/욕설",
+            "없다",
+        ]
         self.instructions = [
             "이 문장에 무엇에 대한 비난적인 표현이 포함되어 있나요?",
             "어떠한 비판적인 표현이 이 문장에 포함되어 있습니까?",
@@ -27,19 +38,19 @@ class UnSmileGenerator(BaseGenerator):
         if split == "test":
             split = "valid"
 
-        dataset = load_dataset('smilegate-ai/kor_unsmile', split=split)
+        dataset = load_dataset("smilegate-ai/kor_unsmile", split=split)
 
         for item in dataset:
             instruction = random.choice(self.instructions)
             text = item["문장"]
             pos_labels = []
             neg_labels = []
-            
+
             for index, i in enumerate(item["labels"]):
                 if i == 1:
                     pos_labels.append(self.labels[index])
                 else:
-                    neg_labels.append(self.labels[index])     
+                    neg_labels.append(self.labels[index])
 
             if len(pos_labels) == 0 or len(neg_labels) == 0:
                 continue

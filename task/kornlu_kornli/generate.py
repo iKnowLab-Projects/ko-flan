@@ -20,7 +20,7 @@ class KorNLUGenerator(BaseGenerator):
             "주어진 문장에 맞는 후속 문장을 작성해 주세요.",
             "주어진 문장에 따라 자연스럽게 이어지는 문장을 만들어 보세요.",
             "주어진 문장과 동일한 주제로 문장을 만들어 보세요.",
-            "제시된 문장과 자연스럽게 이어지는 문장을 작성해 보세요."
+            "제시된 문장과 자연스럽게 이어지는 문장을 작성해 보세요.",
         ]
 
         self.negInstructions = [
@@ -34,7 +34,7 @@ class KorNLUGenerator(BaseGenerator):
             "주어진 문장에 어울리지 않는 후속 문장을 작성해 주세요.",
             "주어진 문장에 따라 자연스럽게 이어지지 않는 문장을 만들어 보세요.",
             "주어진 문장과 동일하지 않은 주제로 문장을 만들어 보세요.",
-            "제시된 문장과 자연스럽게 이어지지 않는 문장을 작성해 보세요."
+            "제시된 문장과 자연스럽게 이어지지 않는 문장을 작성해 보세요.",
         ]
 
     def generate(self, split: str):
@@ -50,12 +50,8 @@ class KorNLUGenerator(BaseGenerator):
             instruction = random.choice(self.instructions)
             text = premise
 
-            pos = list(
-                filter(lambda x: x["label"] == 0, grouped_dataset[premise])
-            )
-            neg = list(
-                filter(lambda x: x["label"] == 2, grouped_dataset[premise])
-            )
+            pos = list(filter(lambda x: x["label"] == 0, grouped_dataset[premise]))
+            neg = list(filter(lambda x: x["label"] == 2, grouped_dataset[premise]))
 
             pos_list = [y["hypothesis"] for y in pos]
             neg_list = [y["hypothesis"] for y in neg]

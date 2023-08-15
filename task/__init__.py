@@ -15,6 +15,8 @@ from .kobest_wic.generate import KobestWicGenerator
 from .niklex.generate import NIKLexGenerator
 from .mm_spellcorrect.generate import mmSpellCorrectGenerator
 from .mm_2022dialogTopic.generate import mm2022DialogTopicGenerator
+from .mm_2022newsTopic.generate import mm2022NewsTopicGenerator
+from .mm_2022chatTopic.generate import mm2022ChatTopicGenerator
 from .kowow_sentence_passage.generate import KOWOWSENTENCEPASSAGEGenerator
 from .kowow_dialog_passage.generate import KOWOWDIALOGPASSAGEGenerator
 from .kowow_dialog_topic.generate import KOWOWDIALOGTOPICGenerator
@@ -44,18 +46,18 @@ ALL_TASKS = {
     "kobest_wic": KobestWicGenerator,
     "niklex": NIKLexGenerator,
     "nikl_absa": nikl.ABSAGenerator,
-    "mms_spellcorrect": mmSpellCorrectGenerator,
+    "mm_spellcorrect": mmSpellCorrectGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "kowow_dialog_topic": KOWOWDIALOGTOPICGenerator,
     "kowow_dialog_passage": KOWOWDIALOGPASSAGEGenerator,
     "kowow_sentence_sentence": KOWOWSENTENCEPASSAGEGenerator,
     "kowow_sentence_topic": KOWOWSENTENCETOPICGenerator,
     "kowow_passage_sentence": KOWOWPASSAGESENTENCEGenerator,
-    "mms_spellcorrect": mmSpellCorrectGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "ko_nia_normal": KoNiaGenerator,
-    "mm_spellcorrect": mmSpellCorrectGenerator,
     "mm_2022dialogTopic": mm2022DialogTopicGenerator,
+    "mm_2022newsTopic": mm2022NewsTopicGenerator,
+    "mm_2022chatTopic": mm2022ChatTopicGenerator,
     "mm_dialog": mmDialogGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,

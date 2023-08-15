@@ -50,7 +50,7 @@ class mm2022DialogTopicGenerator(BaseGenerator):
             neg = [x for x in self.topicList if x != pos]
 
             if len(neg) > 10:
-                neg = random.choices(neg, k=10)
+                neg = random.sample(neg, k=10)
 
             yield {
                 "instruction": instruction,

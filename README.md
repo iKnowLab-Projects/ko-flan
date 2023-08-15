@@ -49,7 +49,10 @@ python -m train.reward_trainer \
 ### 생성모델 lm-eval-harness로 평가
 ```
 # lm-eval-harness의 polyglot 브랜치 설치
-pip install git+https://github.com/EleutherAI/lm-evaluation-harness.git@polyglot
+git clone https://github.com/EleutherAI/lm-evaluation-harness
+cd lm-evaluation-harness
+git switch origin/polyglot
+pip install -e .
 
 # 평가 코드(script/eval_harness.py)
 python main.py \

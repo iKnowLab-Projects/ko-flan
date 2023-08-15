@@ -83,7 +83,7 @@ class RewardTrainer(BaseTrainer):
             tokenizer=self.tokenizer,
             max_length=self.args.max_seq_length,
             pad_to_multiple_of=8,
-            padding="max_length",
+            padding=True,
             return_tensors="pt",
         )
 

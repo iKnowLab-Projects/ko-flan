@@ -41,7 +41,26 @@ python -m train.reward_trainer \
     --output_dir ./checkpoint
 ```
 
-## 실행방법
+## 평가
+### Encoder 모델 평가
+```
+```
+
+### 생성모델 lm-eval-harness로 평가
+```
+# lm-eval-harness의 polyglot 브랜치 설치
+pip install git+https://github.com/EleutherAI/lm-evaluation-harness.git@polyglot
+
+# 평가 코드(script/eval_harness.py)
+python main.py \
+    --model hf-causal \
+    --model_args pretrained=EleutherAI/pythia-160m,revision=step100000 \
+    --tasks lambada_openai,hellaswag \
+    --device cuda:0
+```
+
+
+## Task 작성한 코드 실행방법
 
 루트 디렉터리에서 아래처럼 실행할 경우, 모든 테스크별의 모든 데이터가 data/폴더에 생성됩니다.
 ```

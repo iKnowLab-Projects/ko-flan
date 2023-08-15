@@ -45,7 +45,7 @@ class mm2022DialogTopicGenerator(BaseGenerator):
         for item in dataset:
             # 무작위로 instance를 고른다
             instruction = random.choice(self.instructions)
-            text = " ".join(x for x in item["paragraph"])
+            text = "".join(x for x in item["paragraph"])
             pos = item["topic"]
             neg = [x for x in self.topicList if x != pos]
 

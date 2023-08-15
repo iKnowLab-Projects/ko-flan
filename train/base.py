@@ -279,7 +279,7 @@ class BaseTrainer:
 
             if (
                 self.args.save_strategy == "epoch"
-                and epoch % self.args.save_epochs == 0
+                and (epoch + 1) % self.args.save_epochs == 0
             ):
                 self.save_model(f"epoch-{epoch}")
 

@@ -25,13 +25,12 @@ class KobestWicGenerator(BaseGenerator):
         ]
 
     def generate(self, split: str):
-
         dataset = load_dataset("skt/kobest_v1", "wic", split=split)
 
         for item in dataset:
             word = item["word"]
             instruction = random.choice(self.instructions)
-            instruction = instruction.format(word=f'{word}')
+            instruction = instruction.format(word=f"{word}")
             text = "문장1: " + item["context_1"] + " 문장2: " + item["context_2"]
 
             if item["label"] == 0:  # false

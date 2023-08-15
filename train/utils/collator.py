@@ -1,4 +1,3 @@
-
 import random
 import warnings
 from collections.abc import Mapping
@@ -13,9 +12,9 @@ import torch
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from transformers.utils import PaddingStrategy
 
+
 @dataclass
 class SequenceClassificationCollator(object):
-
     tokenizer: PreTrainedTokenizerBase
     padding: Union[bool, str, PaddingStrategy] = True
     max_length: Optional[int] = None
@@ -32,8 +31,8 @@ class SequenceClassificationCollator(object):
         )
 
     def __call__(self, features: List[Dict[str, Any]]) -> Dict[str, Any]:
-        labels = [x['label'] for x in features]
-        if self.return_tensors == 'pt':
+        labels = [x["label"] for x in features]
+        if self.return_tensors == "pt":
             labels = torch.tensor(labels, dtype=torch.long)
 
         batch = self.tokenizer.pad(
@@ -43,9 +42,9 @@ class SequenceClassificationCollator(object):
             pad_to_multiple_of=self.pad_to_multiple_of,
             return_tensors=self.return_tensors,
         )
-        
-        del batch['label']
-        batch['labels'] = labels
+
+        del batch["label"]
+        batch["labels"] = labels
 
         return batch
 
@@ -60,7 +59,13 @@ class LanguageModelCollator(object):
     return_tensors: str = "pt"
     is_encoder_decoder: bool = False
     padding_feature_keys: List[str] = field(
-        default_factory=["input_ids", "decoder_input_ids", "labels", "attention_mask", "decoder_attention_mask"]
+        default_factory=[
+            "input_ids",
+            "decoder_input_ids",
+            "labels",
+            "attention_mask",
+            "decoder_attention_mask",
+        ]
     )
 
     def __collate(self, features: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -76,8 +81,8 @@ class LanguageModelCollator(object):
 
         for k in self.padding_feature_keys:
             padding_features[k] = features[k]
-        
-        self.tokenizer.padding_side = padding_side
+
+        self.tokenizer.padding_side = self.padding_side
         batch = self.tokenizer.pad(
             padding_features,
             padding=self.padding,
@@ -89,7 +94,7 @@ class LanguageModelCollator(object):
         for k in features.keys():
             if k not in self.padding_feature_keys:
                 batch[k] = features[k]
-        
+
         return batch
 
 
@@ -134,7 +139,13 @@ class DataCollatorForCausalLM:
     return_tensors: str = "pt"
 
     padding_feature_keys: List[str] = field(
-        default_factory=lambda: ["input_ids", "decoder_input_ids", "labels", "attention_mask", "decoder_attention_mask"]
+        default_factory=lambda: [
+            "input_ids",
+            "decoder_input_ids",
+            "labels",
+            "attention_mask",
+            "decoder_attention_mask",
+        ]
     )
 
     def __collate(self, features: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -148,7 +159,7 @@ class DataCollatorForCausalLM:
         if return_tensors is None:
             return_tensors = self.return_tensors
 
-        labels = [x['labels'] for x in features] if "labels" in features[0] else None
+        labels = [x["labels"] for x in features] if "labels" in features[0] else None
 
         # We have to pad the labels before calling `tokenizer.pad` as this method won't pad them and needs them of the
         # same length to return tensors.
@@ -167,15 +178,23 @@ class DataCollatorForCausalLM:
 
             padding_side = self.tokenizer.padding_side
             for feature in features:
-                remainder = [self.label_pad_token_id] * (max_label_length - len(feature["labels"]))
+                remainder = [self.label_pad_token_id] * (
+                    max_label_length - len(feature["labels"])
+                )
                 if isinstance(feature["labels"], list):
                     feature["labels"] = (
-                        feature["labels"] + remainder if padding_side == "right" else remainder + feature["labels"]
+                        feature["labels"] + remainder
+                        if padding_side == "right"
+                        else remainder + feature["labels"]
                     )
                 elif padding_side == "right":
-                    feature["labels"] = np.concatenate([feature["labels"], remainder]).astype(np.int64)
+                    feature["labels"] = np.concatenate(
+                        [feature["labels"], remainder]
+                    ).astype(np.int64)
                 else:
-                    feature["labels"] = np.concatenate([remainder, feature["labels"]]).astype(np.int64)
+                    feature["labels"] = np.concatenate(
+                        [remainder, feature["labels"]]
+                    ).astype(np.int64)
 
         features = self.__collate(features)
         padding_features = {}

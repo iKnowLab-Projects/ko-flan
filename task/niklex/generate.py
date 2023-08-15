@@ -8,7 +8,7 @@ class NIKLexGenerator(BaseGenerator):
     def __init__(self) -> None:
         super().__init__()
 
-        self.labels = set(["비슷한말","반대말", "상위어", "하위어"])
+        self.labels = set(["비슷한말", "반대말", "상위어", "하위어"])
 
         self.instructions = """
             두 개의 용어가 어떻게 연관되어 있는지 설명해주세요.
@@ -27,18 +27,22 @@ class NIKLexGenerator(BaseGenerator):
             두 단어 간의 상관관계를 설명해주세요.
             이 두 용어의 연관성에 대해 자세히 설명해주세요.
             두 단어의 관계에 대해 더 자세히 알려주세요.
-        """.strip().split('\n')
-        self.input_formats= [
+        """.strip().split(
+            "\n"
+        )
+        self.input_formats = [
             "A: {A}\nB: {B}",
             "1: {A}\n2: {B}",
             "{A},{B}",
             "단어1: {A}, 단어2: {B}",
-            "{A} 그리고 {B}"
+            "{A} 그리고 {B}",
         ]
         self.instructions = [x.strip() for x in self.instructions]
 
     def generate(self, split: str):
-        dataset = load_dataset("iknow-lab/niklex", split="train", use_auth_token=True).shuffle(seed=42)
+        dataset = load_dataset(
+            "iknow-lab/niklex", split="train", use_auth_token=True
+        ).shuffle(seed=42)
         dataset = dataset.train_test_split(test_size=0.1)[split]
 
         for item in dataset:

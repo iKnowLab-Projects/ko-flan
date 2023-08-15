@@ -22,7 +22,7 @@ from .kowow_passage_sentence.generate import KOWOWPASSAGESENTENCEGenerator
 from .ko_nia_normal.generate import KoNiaGenerator
 from .mm_dialog.generate import mmDialogGenerator
 from .tl_text_entailment.generate import TlTextEntailmentGenerator
-from . import nikl
+from . import nikl, aihub_mrc, haerae
 from .ko_relation_relation.generate import KO_RELATION_RELATIONGenerator
 from .ko_relation_field.generate import KO_RELATION_FIELDGenerator
 ALL_TASKS = {
@@ -32,7 +32,7 @@ ALL_TASKS = {
     "klue_mrc": KLUE_MRCGenerator,
     "klue_nli": KLUE_NLIGenerator,
     "klue_ynat": KlueYnatGenerator,
-    "kor_nlu": KorNLUGenerator,
+    "kornlu_nli": KorNLUGenerator,
     "unsmile": UnSmileGenerator,
     "klue_re": KlueReGenerator,
     "kobest_copa": KOBEST_COPAGenerator,
@@ -41,17 +41,20 @@ ALL_TASKS = {
     "kobest_wic": KobestWicGenerator,
     "niklex": NIKLexGenerator,
     "nikl_absa": nikl.ABSAGenerator,
-    "mms_spellcorrect": mmSpellCorrectGenerator,
+    "mm_spellcorrect": mmSpellCorrectGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "kowow_dialog_topic": KOWOWDIALOGTOPICGenerator,
     "kowow_dialog_passage": KOWOWDIALOGPASSAGEGenerator,
     "kowow_sentence_sentence": KOWOWSENTENCEPASSAGEGenerator,
     "kowow_sentence_topic": KOWOWSENTENCETOPICGenerator,
     "kowow_passage_sentence": KOWOWPASSAGESENTENCEGenerator,
-    "mms_spellcorrect": mmSpellCorrectGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "ko_nia_normal": KoNiaGenerator,
-    "mm_spellcorrect": mmSpellCorrectGenerator,
+    "mm_2022dialogTopic": mm2022DialogTopicGenerator,
+    "mm_2022newsTopic": mm2022NewsTopicGenerator,
+    "mm_2022chatTopic": mm2022ChatTopicGenerator,
+    "mm_2021ner": mm2021NERGenerator,
+    "mm_2022ner": mm2022NERGenerator,
     "mm_dialog": mmDialogGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,

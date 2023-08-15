@@ -12,6 +12,7 @@ from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 
 from datasets import disable_caching, load_dataset
+import accelerate
 from accelerate import Accelerator
 from tqdm.auto import tqdm
 from accelerate.logging import get_logger
@@ -19,23 +20,36 @@ from accelerate.logging import get_logger
 import os
 import evaluate
 from pprint import pprint
-from transformers import AutoModelForSequenceClassification, AutoModelForCausalLM, AutoConfig, AutoModelForTokenClassification, TrainingArguments
+
+import transformers
+from transformers import (
+    AutoModelForSequenceClassification,
+    AutoModelForCausalLM,
+    AutoConfig,
+    AutoModelForTokenClassification,
+    TrainingArguments,
+)
 
 
 MODEL_TYPES = {
+    "seq2seq": transformers.AutoModelForSeq2SeqLM,
     "sequence-classification": AutoModelForSequenceClassification,
     "token-classification": AutoModelForTokenClassification,
     "causal-lm": AutoModelForCausalLM,
 }
 
+
 @dataclass
 class BaseTrainingArguments(TrainingArguments):
+    save_epochs: int = 1
+
     dataset: Optional[str] = None
     max_seq_length: int = 512
     project: str = "ko-flan"
     model_name_or_path: str = ""
     tokenizer_name: Optional[str] = None
     num_labels: int = 1
+
     config_name: Optional[str] = None
     revision: Optional[str] = None
     from_flax: bool = False
@@ -53,6 +67,7 @@ def collate_dictlist(dl):
 
     return out
 
+
 class BaseTrainer:
     def __init__(self, accelerator: Accelerator, args: BaseTrainingArguments) -> None:
         super().__init__()
@@ -67,6 +82,7 @@ class BaseTrainer:
         model_cls = MODEL_TYPES[args.model_type]
 
         kwargs = {}
+        print("load model", args.model_type, model_cls, args.model_name_or_path)
 
         if args.model_type == "sequence-classification":
             kwargs["num_labels"] = args.num_labels
@@ -79,11 +95,11 @@ class BaseTrainer:
                 args.model_name_or_path,
                 revision=args.revision,
                 from_flax=args.from_flax,
-                **kwargs
-                )
+                **kwargs,
+            )
         else:
             raise Exception("config_name or model_name_or_path 가 지정되어야 합니다.")
-    
+
         return model
 
     def get_tokenizer(self, args):
@@ -102,46 +118,36 @@ class BaseTrainer:
 
         datasets = self.prepare_dataset()
 
-        self.train_dataloader = self._create_dataloader(
-            datasets.get('train'),
-            True
-        )
+        self.train_dataloader = self._create_dataloader(datasets.get("train"), True)
         self.eval_dataloader = self._create_dataloader(
-            datasets.get('validation'),
+            datasets.get("validation"),
         )
 
-        steps_per_epoch = len(datasets.get('train')) / (
+        steps_per_epoch = len(datasets.get("train")) / (
             self.args.per_device_train_batch_size
             * self.args.gradient_accumulation_steps
         )
         total_steps = int(self.args.num_train_epochs * steps_per_epoch)
         optimizer = optim.AdamW(self.model.parameters(), lr=self.args.learning_rate)
 
-        # lr_scheduler = torch.optim.lr_scheduler.OneCycleLR(
-        #     optimizer,
-        #     max_lr=self.args.learning_rate,
-        #     steps_per_epoch=steps_per_epoch,
-        #     epochs=self.args.num_train_epochs,
-        #     anneal_strategy="linear",
-        #     pct_start=0.01,
-        #     div_factor=10,
-        #     final_div_factor=10,
-        # )
         lr_scheduler = None
 
         if self.args.lr_scheduler_type == "linear":
             lr_scheduler = transformers.get_linear_schedule_with_warmup(
-                optimizer, 
-                self.args.warmup_steps if self.args.warmup_steps > 0 else int(total_steps * self.args.warmup_ratio),
-                total_steps
-                )
+                optimizer,
+                self.args.warmup_steps
+                if self.args.warmup_steps > 0
+                else int(total_steps * self.args.warmup_ratio),
+                total_steps,
+            )
         elif self.args.lr_scheduler_type == "cosine":
             lr_scheduler = transformers.get_cosine_schedule_with_warmup(
-                optimizer, 
-                self.args.warmup_steps if self.args.warmup_steps > 0 else int(total_steps * self.args.warmup_ratio),
-                total_steps
-                )
-
+                optimizer,
+                self.args.warmup_steps
+                if self.args.warmup_steps > 0
+                else int(total_steps * self.args.warmup_ratio),
+                total_steps,
+            )
 
         (
             self.model,
@@ -150,7 +156,11 @@ class BaseTrainer:
             self.lr_scheduler,
             self.eval_dataloader,
         ) = self.accelerator.prepare(
-            self.model, optimizer, self.train_dataloader, lr_scheduler, self.eval_dataloader
+            self.model,
+            optimizer,
+            self.train_dataloader,
+            lr_scheduler,
+            self.eval_dataloader,
         )
 
         self.accelerator.register_for_checkpointing(lr_scheduler)
@@ -163,19 +173,19 @@ class BaseTrainer:
 
     def training_step(self, batch):
         """
-            return loss
+        return loss
         """
         pass
 
     def evaluation_step(self, batch):
         """
-            return dict
+        return dict
         """
         pass
 
     def collate_evaluation(self, results: List[Dict]):
         """
-            return dict(metric)
+        return dict(metric)
         """
         return None
 
@@ -186,14 +196,14 @@ class BaseTrainer:
         kwargs = {}
         collator = self.get_collator()
         if collator is not None:
-            kwargs['collate_fn'] = collator
+            kwargs["collate_fn"] = collator
 
         return DataLoader(
             dataset,
             batch_size=self.args.per_device_train_batch_size,
             shuffle=shuffle,
-            **kwargs
-            )
+            **kwargs,
+        )
 
     def train(self):
         global_step = 0
@@ -201,30 +211,29 @@ class BaseTrainer:
 
         for epoch in tqdm(
             range(int(self.args.num_train_epochs)),
-            position=0,
+            position=1,
             disable=not self.accelerator.is_local_main_process,
         ):
             self.model.train()
             epoch_tqdm = tqdm(
                 self.train_dataloader,
                 disable=not self.accelerator.is_local_main_process,
-                position=1,
+                position=0,
                 leave=False,
             )
 
             for step, batch in enumerate(epoch_tqdm):
-                step_output = self.training_step(batch)
-                if torch.is_tensor(step_output):
-                    loss = step_output
-                else:
-                    loss = step_output['loss']
-                loss = loss / self.args.gradient_accumulation_steps
-                self.accelerator.backward(loss)
+                with self.accelerator.accumulate(self.model):
+                    step_output = self.training_step(batch)
+                    if torch.is_tensor(step_output):
+                        loss = step_output
+                    else:
+                        loss = step_output["loss"]
 
-                if (global_step + 1) % self.args.gradient_accumulation_steps == 0:
                     if self.accelerator.sync_gradients:
                         self.accelerator.clip_grad_norm_(self.model.parameters(), 1.0)
 
+                    self.accelerator.backward(loss)
                     self.optimizer.step()
                     self.lr_scheduler.step()
                     self.optimizer.zero_grad()
@@ -234,15 +243,22 @@ class BaseTrainer:
                     if (
                         self.accelerator.is_main_process
                         and optimizer_step % self.args.logging_steps == 0
-                    ):  
+                    ):
                         if torch.is_tensor(step_output):
                             metrics = {"train/loss": step_output.item()}
                         else:
-                            metrics = {f"train/{k}": v.item() for k, v in step_output.items()}
+                            metrics = {
+                                f"train/{k}": v.item() for k, v in step_output.items()
+                            }
 
                         metrics["optimizer_step"] = optimizer_step
-                        metrics["train/learning_rate"] = self.lr_scheduler.scheduler._last_lr[0]
-                        metrics["train/loss"] = loss.item() * self.args.gradient_accumulation_steps
+                        metrics[
+                            "train/learning_rate"
+                        ] = self.lr_scheduler.scheduler._last_lr[0]
+                        metrics["train/loss"] = (
+                            loss.item() * self.args.gradient_accumulation_steps
+                        )
+                        metrics["epoch"] = epoch
                         self.accelerator.log(metrics)
                         print()
                         pprint(metrics)
@@ -259,30 +275,31 @@ class BaseTrainer:
                     ):
                         self.evaluate(epoch, optimizer_step)
 
-                global_step += 1
+                    global_step += 1
 
-            if self.args.evaluation_strategy == "epoch":
-                if self.accelerator.is_main_process:
-                    self.save_model(f"epoch-{epoch}")
-                self.accelerator.wait_for_everyone()
+            if (
+                self.args.save_strategy == "epoch"
+                and (epoch + 1) % self.args.save_epochs == 0
+            ):
+                self.save_model(f"epoch-{epoch}")
 
             if self.args.do_eval and self.args.evaluation_strategy == "epoch":
                 self.evaluate(epoch, optimizer_step)
 
         if self.args.save_strategy == "last":
-            if self.accelerator.is_main_process:
-                self.save_model(f"epoch-{epoch}-last")
-            self.accelerator.wait_for_everyone()
+            self.save_model(f"epoch-{epoch}-last")
 
     def save_model(self, name):
         run_name = self.args.run_name.replace("/", "__")
         path = f"{self.args.output_dir}/{run_name}/{name}"
-        device = next(self.model.parameters()).device
         unwrapped_model = self.accelerator.unwrap_model(self.model).cpu()
-        unwrapped_model.save_pretrained(path)
-        self.tokenizer.save_pretrained(path)
 
-        unwrapped_model.to(device)
+        if self.accelerator.is_local_main_process:
+            unwrapped_model.save_pretrained(path)
+            self.tokenizer.save_pretrained(path)
+
+        unwrapped_model.to(self.accelerator.device)
+        self.accelerator.wait_for_everyone()
 
     @torch.no_grad()
     def evaluate(self, epoch, optimizer_step):
@@ -307,6 +324,7 @@ class BaseTrainer:
             eval_outputs = collate_dictlist(eval_outputs)
             eval_results = self.collate_evaluation(eval_outputs)
             eval_results = {f"eval/{k}": v for k, v in eval_results.items()}
+            eval_results["epoch"] = epoch
             self.accelerator.log(eval_results)
 
         self.accelerator.wait_for_everyone()
@@ -314,20 +332,22 @@ class BaseTrainer:
 
     @classmethod
     def main(trainer_cls, arg_cls: BaseTrainingArguments):
-        parser = HfArgumentParser(
-            (arg_cls,)
-        )
+        parser = HfArgumentParser((arg_cls,))
         args = parser.parse_args()
 
         set_seed(args.seed)
 
-        accelerator = Accelerator()
         os.environ["WANDB_NAME"] = args.run_name
-        accelerator = Accelerator(log_with="wandb")
-        accelerator.init_trackers(
-            args.project,
-            config=args
+        accelerator = Accelerator(
+            log_with="wandb",
+            kwargs_handlers=[
+                accelerate.DistributedDataParallelKwargs(
+                    broadcast_buffers=False,
+                )
+            ],
+            gradient_accumulation_steps=args.gradient_accumulation_steps,
         )
+        accelerator.init_trackers(args.project, config=args)
         trainer = trainer_cls(accelerator, args)
         trainer.setup()
         if args.do_train:

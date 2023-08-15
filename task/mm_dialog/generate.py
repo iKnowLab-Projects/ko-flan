@@ -38,14 +38,14 @@ class mmDialogGenerator(BaseGenerator):
 
     def generate(self, split: str):
         dataset = load_dataset(
-            "iknow-lab/mm_dialog", split="train", use_auth_token=True
+            "iknow-lab/mm_dialog_v2", split="train", use_auth_token=True
         ).shuffle(seed=42)
         dataset = dataset.train_test_split(test_size=0.1)[split]
         self.topicList = list(set([x["topic"] for x in dataset]))
         for item in dataset:
             # 무작위로 instance를 고른다
             instruction = random.choice(self.instructions)
-            text = " ".join(x for x in item["conversation"])
+            text = "".join(x for x in item["conversation"])
             pos = item["topic"]
             neg = [x for x in self.topicList if x != pos]
 

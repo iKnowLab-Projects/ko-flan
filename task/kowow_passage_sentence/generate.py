@@ -54,6 +54,6 @@ class KOWOWPASSAGESENTENCEGenerator(BaseGenerator):
             yield {
                 "instruction": instruction,
                 "input": text,
-                "positives": pos,
-                "negatives": neg,
+                "positives": [pos],
+                "negatives": [neg],
             }

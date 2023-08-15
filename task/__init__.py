@@ -14,7 +14,7 @@ from .kobest_boolq.generate import KobestBoolqGenerator
 from .kobest_wic.generate import KobestWicGenerator
 from .niklex.generate import NIKLexGenerator
 from .mm_spellcorrect.generate import mmSpellCorrectGenerator
-from .kowow_sentence_passage.generate import KOWOWSENTENCEPASSAGEGenerator
+from .kowow_sentence_sentence.generate import KOWOWSENTENCEPASSAGEGenerator
 from .kowow_dialog_passage.generate import KOWOWDIALOGPASSAGEGenerator
 from .kowow_dialog_topic.generate import KOWOWDIALOGTOPICGenerator
 from .kowow_sentence_topic.generate import KOWOWSENTENCETOPICGenerator
@@ -24,7 +24,7 @@ from .mm_dialog.generate import mmDialogGenerator
 from .tl_text_entailment.generate import TlTextEntailmentGenerator
 from . import nikl
 from .ko_relation_relation.generate import KO_RELATION_RELATIONGenerator
-
+from .ko_relation_field.generate import KO_RELATION_FIELDGenerator
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
     "apeach": APEACHGenerator,
@@ -56,7 +56,9 @@ ALL_TASKS = {
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,
     "tl_text_entailment": TlTextEntailmentGenerator,
-    "ko_relation_relation": KO_RELATION_RELATIONGenerator
+    "ko_relation_relation": KO_RELATION_RELATIONGenerator,
+    "ko_relation_field": KO_RELATION_FIELDGenerator
+
 }
 
 

@@ -86,6 +86,8 @@ class mmSpellCorrectGenerator(BaseGenerator):
             text = " ".join(x for x in item["conversation"])
             pos = item["topic"]
             neg = [x for x in self.topicList if x != pos]
+            if len(neg) > 10:
+                neg = random.sample(neg, k=10)
 
             yield {
                 "instruction": instruction,

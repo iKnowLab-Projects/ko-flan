@@ -17,6 +17,8 @@ from .mm_spellcorrect.generate import mmSpellCorrectGenerator
 from .mm_2022dialogTopic.generate import mm2022DialogTopicGenerator
 from .mm_2022newsTopic.generate import mm2022NewsTopicGenerator
 from .mm_2022chatTopic.generate import mm2022ChatTopicGenerator
+from .mm_2021ner.generate import mm2021NERGenerator
+from .mm_2022ner.generate import mm2022NERGenerator
 from .kowow_sentence_passage.generate import KOWOWSENTENCEPASSAGEGenerator
 from .kowow_dialog_passage.generate import KOWOWDIALOGPASSAGEGenerator
 from .kowow_dialog_topic.generate import KOWOWDIALOGTOPICGenerator
@@ -58,6 +60,8 @@ ALL_TASKS = {
     "mm_2022dialogTopic": mm2022DialogTopicGenerator,
     "mm_2022newsTopic": mm2022NewsTopicGenerator,
     "mm_2022chatTopic": mm2022ChatTopicGenerator,
+    "mm_2021ner": mm2021NERGenerator,
+    "mm_2022ner": mm2022NERGenerator,
     "mm_dialog": mmDialogGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,

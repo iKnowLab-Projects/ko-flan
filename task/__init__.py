@@ -55,7 +55,7 @@ ALL_TASKS = {
     "nikl_cb2020": nikl.CB2020Generator,
     "ko_nia_normal": KoNiaGenerator,
     "mm_spellcorrect": mmSpellCorrectGenerator,
-    "mm_2022dialogtopic": mm2022DialogTopicGenerator,
+    "mm_2022dialogTopic": mm2022DialogTopicGenerator,
     "mm_dialog": mmDialogGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,

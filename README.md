@@ -21,6 +21,28 @@ huggingface-cli login --token 토큰
 wandb login 토큰
 ```
 
+### accelerate config 사용법(DataParallel)
+먼저 아래 명령어를 친다.
+```
+accelerate config
+```
+이후 선택지
+- In which compute environment are you running? -> This machine
+- Which type of machine are you using? -> multi-GPU
+- Do you wish to optimize your script with torch dynamo?[yes/NO]: NO                                                                                                                                              
+- Do you want to use DeepSpeed? [yes/NO]:NO                                                                                                                                                                                             
+- Do you want to use FullyShardedDataParallel? [yes/NO]: NO
+- Do you want to use Megatron-LM ? [yes/NO]: NO
+- <b>How many GPU(s) should be used for distributed training? [1]:4 </b>
+
+이후 다음 질문에서 몇 번 GPU 사용할 것인지 지정할 수 있습니다. 내가 0번 한개 쓰고싶다 -> 0, 두개 1, 2번 쓰고싶다 -> 1, 2
+- What GPU(s) (by id) should be used for training on this machine as a comma-seperated list? [all]: 0
+
+이후 마지막 질문에서 NO 하면 끝.
+- Do you wish to use FP16 or BF16 (mixed precision)?: NO
+
+끝
+
 
 ## 학습
 ### Reward Model
@@ -44,6 +66,13 @@ python -m train.reward_trainer \
 ## 평가
 ### Encoder 모델 평가
 ```
+
+python -m eval.eval_dataset \
+    --model_name_or_path iknow-lab/ko-flan-zero-v0-0731 \
+    --batch_size 32 
+    --device cuda:0
+
+# 중요: 위의 --device 에서 몇번 GPU를 사용해서 평가할 것인지 지정하게됨!!! GPU 안쓰면 cpu라고 입력
 ```
 
 ### 생성모델 lm-eval-harness로 평가
@@ -51,15 +80,24 @@ python -m train.reward_trainer \
 # lm-eval-harness의 polyglot 브랜치 설치
 git clone https://github.com/EleutherAI/lm-evaluation-harness
 cd lm-evaluation-harness
-git switch origin/polyglot
+git checkout origin/polyglot
 pip install -e .
 
+# 다시 원래 디렉터리로 돌아와서
+cd .. 
+
 # 평가 코드(script/eval_harness.py)
-python main.py \
-    --model hf-causal \
-    --model_args pretrained=EleutherAI/pythia-160m,revision=step100000 \
-    --tasks lambada_openai,hellaswag \
+# tasks="nsmc,korquad,korunsmile,kohatespeech,kobest_*,klue_*"
+
+tasks="kobest_*"
+
+python -m eval.eval_harness_main \
+    --model hf-seq2seq \
+    --model_args "pretrained=iknow-lab/ke-t5-large-koflan-0816" \
+    --tasks "$tasks" \
     --device cuda:0
+
+# 중요: 위의 --device 에서 몇번 GPU를 사용해서 평가할 것인지 지정하게됨!!! GPU 안쓰면 cpu라고 입력
 ```
 
 
@@ -125,10 +163,9 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
     "positives": ["여성/가족", "악플/욕설"],
     "negatives": ["남성", "성소수자", "인종/국적", "연령", "지역", "종교", "없습니다"]
 }
-
-
 ```
-## 저장한 모델을 huggingface hub에 올리기
+
+## 생성한 데이터를 huggingface hub에 올리기
 ```
 # 로그인 안했다면
 huggingface-cli login --token your_token

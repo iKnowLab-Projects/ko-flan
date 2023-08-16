@@ -25,6 +25,13 @@ from .tl_text_entailment.generate import TlTextEntailmentGenerator
 from . import nikl, aihub_mrc, haerae
 from .ko_relation_relation.generate import KO_RELATION_RELATIONGenerator
 from .ko_relation_field.generate import KO_RELATION_FIELDGenerator
+from .mm_2021ner.generate import mm2021NERGenerator
+from .mm_2022ner.generate import mm2022NERGenerator
+from .mm_2022dialogTopic.generate import mm2022DialogTopicGenerator
+from .mm_2022chatTopic.generate import mm2022ChatTopicGenerator
+from .mm_2022newsTopic.generate import mm2022NewsTopicGenerator
+from .kor_nli.generate import KorNLIGenerator
+
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
     "apeach": APEACHGenerator,
@@ -60,7 +67,8 @@ ALL_TASKS = {
     "nikl_cb2021": nikl.CB2021Generator,
     "tl_text_entailment": TlTextEntailmentGenerator,
     "ko_relation_relation": KO_RELATION_RELATIONGenerator,
-    "ko_relation_field": KO_RELATION_FIELDGenerator
+    "ko_relation_field": KO_RELATION_FIELDGenerator,
+    "kor_nli": KorNLIGenerator
 
 }
 

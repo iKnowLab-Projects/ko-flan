@@ -8,13 +8,12 @@ from itertools import chain
 
 import torch
 import torch.nn.functional as F
-
 import pandas as pd
 from pprint import pprint
 from datasets import load_dataset
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from transformers.utils import PaddingStrategy
-
+from torch.nn.utils.rnn import pad_sequence
 
 @dataclass
 class RewardModelArguments(BaseTrainingArguments):
@@ -109,10 +108,20 @@ class RewardTrainer(BaseTrainer):
     def evaluation_step(self, batch):
         return self._shared_step(batch)
 
+
+
+
+    def pad_tensor_list(self, tensor_list):
+        max_length = max(tensor.size(0) for tensor in tensor_list)
+        if tensor_list[0].dim() == 1:
+            return [F.pad(t, (max_length - t.size(0),0),'constant',0) if t.size(0) < max_length else t for t in tensor_list]
+        else:
+            return [F.pad(t, (0,0, max_length - t.size(0), 0),'constant',0) if t.size(0) < max_length else t for t in tensor_list]
+
     def collate_evaluation(self, results: List[Dict]):
-        losses = torch.stack(results["loss"]).reshape(-1).tolist()
-        accuracies = torch.stack(results["acc"]).reshape(-1).tolist()
-        tasks = torch.stack(results["task"]).reshape(-1).tolist()
+        losses = torch.stack(self.pad_tensor_list(results["loss"])).reshape(-1).tolist()
+        accuracies = torch.stack(self.pad_tensor_list(results["acc"])).reshape(-1).tolist()
+        tasks = torch.stack(self.pad_tensor_list(results["task"])).reshape(-1).tolist()
         tasks = [self.id2task[k] for k in tasks]
 
         df = pd.DataFrame({"loss": losses, "acc": accuracies, "task": tasks})
@@ -128,6 +137,8 @@ class RewardTrainer(BaseTrainer):
             eval_results[f"{task}/acc"] = acc
 
         return eval_results
+
+
 
 
 if __name__ == "__main__":

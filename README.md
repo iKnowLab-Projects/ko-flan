@@ -15,7 +15,7 @@ pip install -r requirements.txt
 그 외의 세팅들
 ```
 # huggingface private dataset 접근을 위해
-huggingface-cli login --token 토큰
+ 토큰
 
 # weight & bias login
 wandb login 토큰
@@ -29,8 +29,8 @@ accelerate config
 이후 선택지
 - In which compute environment are you running? -> This machine
 - Which type of machine are you using? -> multi-GPU
-- Do you wish to optimize your script with torch dynamo?[yes/NO]: NO                                                                                                                                              
-- Do you want to use DeepSpeed? [yes/NO]:NO                                                                                                                                                                                             
+- Do you wish to optimize your script with torch dynamo?[yes/NO]: NO
+- Do you want to use DeepSpeed? [yes/NO]:NO
 - Do you want to use FullyShardedDataParallel? [yes/NO]: NO
 - Do you want to use Megatron-LM ? [yes/NO]: NO
 - <b>How many GPU(s) should be used for distributed training? [1]:4 </b>
@@ -54,7 +54,7 @@ python -m train.reward_trainer \
     --project ko-flan \
     --run_name test \
     --model_name_or_path monologg/koelectra-small-v3-discriminator \
-    --dataset iknow-lab/koflan-test-110k-0725 \
+    --dataset iknow-lab/koflan-test-0725\
     --logging_steps 500 \
     --per_device_train_batch_size 8 \
     --num_train_epochs 10 \
@@ -69,7 +69,7 @@ python -m train.reward_trainer \
 
 python -m eval.eval_dataset \
     --model_name_or_path iknow-lab/ko-flan-zero-v0-0731 \
-    --batch_size 32 
+    --batch_size 32
     --device cuda:0
 
 # 중요: 위의 --device 에서 몇번 GPU를 사용해서 평가할 것인지 지정하게됨!!! GPU 안쓰면 cpu라고 입력
@@ -84,7 +84,7 @@ git checkout origin/polyglot
 pip install -e .
 
 # 다시 원래 디렉터리로 돌아와서
-cd .. 
+cd ..
 
 # 평가 코드(script/eval_harness.py)
 # tasks="nsmc,korquad,korunsmile,kohatespeech,kobest_*,klue_*"
@@ -119,7 +119,7 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
 2. task.base의 BaseGenerator를 상속하는 Generator 클래스를 만드세요.
 3. generate() 메서드에서 주어진 split(train or test)에 맞는 결과를 yield 하면 됩니다. generator 예제 참고: [task/nsmc/generate.py](./task/nsmc/generate.py)
 4. [task/\_\_init\_\_.py](task/__init__.py)안의 ALL_TASKS 에 구현한 generator class를 추가하세요.
-5. [task/run.py](task/run.py)를 실행하세요.  
+5. [task/run.py](task/run.py)를 실행하세요.
 6. 결과가 기본적으로 data/ 폴더에 저장됩니다.
 
 
@@ -128,9 +128,9 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
 예시 1. 이진 분류
 ```json
 {
-    "instruction": "이 댓글을 읽고 작성자의 감정을 파악해보세요.", 
-    "input": "굳 ㅋ", 
-    "positives": ["긍정적인 리뷰"], 
+    "instruction": "이 댓글을 읽고 작성자의 감정을 파악해보세요.",
+    "input": "굳 ㅋ",
+    "positives": ["긍정적인 리뷰"],
     "negatives": ["부정"]
 }
 ```
@@ -145,11 +145,11 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
     "negatives": ["IT과학", "생활문화", "스포츠", "세계", "정치"]
 }
 
-# MRC 
+# MRC
 {
-    "instruction": "바그너는 괴테의 파우스트를 읽고 무엇을 쓰고자 했는가?", 
-    "input": "1839년 바그너는 괴테의 파우스트을 처음 읽고 그 내용에 마음이 끌려 이를 소재로 해서 하나의 교향곡을 쓰려는 뜻을 갖는다. 이 시기 바그너는 1838년에 빛 독촉으로 산전수전을 다 걲은 상황이라 좌절과 실망에 가득했으며 메피스토펠레스를 만나는 파우스트의 심경에 공감했다고 한다. 또한 파리에서 아브네크의 지휘로 파리 음악원 관현악단이 연주하는 베토벤의 교향곡 9번을 듣고 깊은 감명을 받았는데, 이것이 이듬해 1월에 파우스트의 서곡으로 쓰여진 이 작품에 조금이라도 영향을 끼쳤으리라는 것은 의심할 여지가 없다. 여기의 라단조 조성의 경우에도 그의 전기에 적혀 있는 것처럼 단순한 정신적 피로나 실의가 반영된 것이 아니라 베토벤의 합창교향곡 조성의 영향을 받은 것을 볼 수 있다. 그렇게 교향곡 작곡을 1839년부터 40년에 걸쳐 파리에서 착수했으나 1악장을 쓴 뒤에 중단했다. 또한 작품의 완성과 동시에 그는 이 서곡(1악장)을 파리 음악원의 연주회에서 연주할 파트보까지 준비하였으나, 실제로는 이루어지지는 않았다. 결국 초연은 4년 반이 지난 후에 드레스덴에서 연주되었고 재연도 이루어졌지만, 이후에 그대로 방치되고 말았다. 그 사이에 그는 리엔치와 방황하는 네덜란드인을 완성하고 탄호이저에도 착수하는 등 분주한 시간을 보냈는데, 그런 바쁜 생활이 이 곡을 잊게 한 것이 아닌가 하는 의견도 있다.", 
-    "positives": ["교향곡"], 
+    "instruction": "바그너는 괴테의 파우스트를 읽고 무엇을 쓰고자 했는가?",
+    "input": "1839년 바그너는 괴테의 파우스트을 처음 읽고 그 내용에 마음이 끌려 이를 소재로 해서 하나의 교향곡을 쓰려는 뜻을 갖는다. 이 시기 바그너는 1838년에 빛 독촉으로 산전수전을 다 걲은 상황이라 좌절과 실망에 가득했으며 메피스토펠레스를 만나는 파우스트의 심경에 공감했다고 한다. 또한 파리에서 아브네크의 지휘로 파리 음악원 관현악단이 연주하는 베토벤의 교향곡 9번을 듣고 깊은 감명을 받았는데, 이것이 이듬해 1월에 파우스트의 서곡으로 쓰여진 이 작품에 조금이라도 영향을 끼쳤으리라는 것은 의심할 여지가 없다. 여기의 라단조 조성의 경우에도 그의 전기에 적혀 있는 것처럼 단순한 정신적 피로나 실의가 반영된 것이 아니라 베토벤의 합창교향곡 조성의 영향을 받은 것을 볼 수 있다. 그렇게 교향곡 작곡을 1839년부터 40년에 걸쳐 파리에서 착수했으나 1악장을 쓴 뒤에 중단했다. 또한 작품의 완성과 동시에 그는 이 서곡(1악장)을 파리 음악원의 연주회에서 연주할 파트보까지 준비하였으나, 실제로는 이루어지지는 않았다. 결국 초연은 4년 반이 지난 후에 드레스덴에서 연주되었고 재연도 이루어졌지만, 이후에 그대로 방치되고 말았다. 그 사이에 그는 리엔치와 방황하는 네덜란드인을 완성하고 탄호이저에도 착수하는 등 분주한 시간을 보냈는데, 그런 바쁜 생활이 이 곡을 잊게 한 것이 아닌가 하는 의견도 있다.",
+    "positives": ["교향곡"],
     "negatives": ["1악장", "베토벤의 교향곡 9번", "파우스트"]
 }
 ```
@@ -158,7 +158,7 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
 ```json
 # 멀티클래스 분류
 {
-    "instruction": "이 글에는 어떠한 종류의 혐오 표현이 있는지 알려주세요.", 
+    "instruction": "이 글에는 어떠한 종류의 혐오 표현이 있는지 알려주세요.",
     "input": "이래서 여자는 게임을 하면 안된다 ㅋㅋ ㅂㅅ",
     "positives": ["여성/가족", "악플/욕설"],
     "negatives": ["남성", "성소수자", "인종/국적", "연령", "지역", "종교", "없습니다"]
@@ -170,5 +170,5 @@ python -m task.run --tasks "nsmc,apeach" --max_instance_per_task 10
 # 로그인 안했다면
 huggingface-cli login --token your_token
 
-python -m task.push_to_hub iknow-lab/koflan-test-110k-0725 data/ 
+python -m task.push_to_hub iknow-lab/koflan-test-110k-0725 data/
 ```

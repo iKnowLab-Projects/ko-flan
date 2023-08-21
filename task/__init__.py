@@ -30,6 +30,7 @@ from .mm_2022ner.generate import mm2022NERGenerator
 from .mm_2022dialogTopic.generate import mm2022DialogTopicGenerator
 from .mm_2022chatTopic.generate import mm2022ChatTopicGenerator
 from .mm_2022newsTopic.generate import mm2022NewsTopicGenerator
+from .aihub_dialogSummary_topic.generate import aihubDialogSummaryTopicGenerator
 from .kor_nli.generate import KorNLIGenerator
 
 ALL_TASKS = {
@@ -63,6 +64,7 @@ ALL_TASKS = {
     "mm_2021ner": mm2021NERGenerator,
     "mm_2022ner": mm2022NERGenerator,
     "mm_dialog": mmDialogGenerator,
+    "aihub_dialogSummaryTopic": aihubDialogSummaryTopicGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,
     "tl_text_entailment": TlTextEntailmentGenerator,

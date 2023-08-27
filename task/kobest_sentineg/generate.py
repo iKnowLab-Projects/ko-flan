@@ -23,7 +23,7 @@ class KobestBoolqGenerator(BaseGenerator):
             "부정문입니다.",
             "미흡합니다.",
             "부정적인 표현입니다.",
-            "불만족스럽스니다.",
+            "불만족스럽습니다.",
         ]
         self.instruction = [
             "다음 문장이 긍정적인지 부정적인지 분류하세요.",

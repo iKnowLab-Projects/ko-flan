@@ -19,12 +19,16 @@ class aihubThesisSummaryGenerator(BaseGenerator):
             "주어진 지문을 해석하고 요약해보세요.",
             "다음 문장들을 읽고 주요 내용을 정리하여 간단히 표현해주세요.",
         ]
-    def twiceLoop(self, dataset, which):
+    def generate(self, split: str):
+        dataset = load_dataset(
+            "iknow-lab/aihub_thesisSummary", split=split, token=True
+        ).shuffle(seed=42)
+        
         for item in dataset:
             # 무작위로 instance를 고른다
             instruction = random.choice(self.instructions)
-            text = "".join(x for x in item[which+"_passage"])
-            pos = item[which+"_summary"]
+            text = "".join(x for x in item["section_passage"])
+            pos = item["section_summary"]
             neg = []
 
             yield {
@@ -33,10 +37,18 @@ class aihubThesisSummaryGenerator(BaseGenerator):
                 "positives": [pos],
                 "negatives": neg,
             }
-    def generate(self, split: str):
-        dataset = load_dataset(
-            "iknow-lab/aihub_dialogSummary", split=split, token=True
-        ).shuffle(seed=42)
-        twiceLoop(dataset = dataset, which = "section")
-        twiceLoop(dataset = dataset, which = "entire")
-        
+            
+        for item in dataset:
+            # 무작위로 instance를 고른다
+            instruction = random.choice(self.instructions)
+            text = "".join(x for x in item["entire_passage"])
+            pos = item["entire_summary"]
+            neg = []
+
+            yield {
+                "instruction": instruction,
+                "input": text,
+                "positives": [pos],
+                "negatives": neg,
+            }
+    

@@ -35,6 +35,7 @@ from .aihub_dialogSummary_summary.generate import aihubDialogSummarySummaryGener
 from .aihub_columnDocumentSummary.generate import aihubColumnDocumentSummaryGenerator
 from .aihub_thesisSummary.generate import aihubThesisSummaryGenerator
 from .aihub_bookSummary.generate import aihubBookSummaryGenerator
+from .aihub_2020newsArticleSummary.generate import aihub2020NewsArticleSummaryGenerator
 from .kor_nli.generate import KorNLIGenerator
 
 ALL_TASKS = {
@@ -73,6 +74,7 @@ ALL_TASKS = {
     "aihub_columnDocumnetSummary":aihubColumnDocumentSummaryGenerator,
     "aihub_thesisSummary": aihubThesisSummaryGenerator,
     "aihub_bookSummary": aihubBookSummaryGenerator,
+    "aihub_2020newsArticleSummary": aihub2020NewsArticleSummaryGenerator,
     "nikl_cb2020": nikl.CB2020Generator,
     "nikl_cb2021": nikl.CB2021Generator,
     "tl_text_entailment": TlTextEntailmentGenerator,

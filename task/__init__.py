@@ -38,6 +38,7 @@ from .aihub_bookSummary.generate import aihubBookSummaryGenerator
 from .aihub_2020newsArticleSummary.generate import aihub2020NewsArticleSummaryGenerator
 from .aihub_2020lawDocumentSummary.generate import aihub2020lawDocumentSummaryGenerator
 from .aihub_BCC1N20Summary.generate import aihubBCC1N20SummaryGenerator
+from .aihub_BCC1N2to3Summary.generate import aihubBCC1N2to3SummaryGenerator
 
 
 from .kor_nli.generate import KorNLIGenerator
@@ -76,6 +77,7 @@ ALL_TASKS = {
     "aihub_dialogSummaryTopic": aihubDialogSummaryTopicGenerator,
     "aihub_dialogSummarySummary": aihubDialogSummarySummaryGenerator,
     "aihub_columnDocumnetSummary":aihubColumnDocumentSummaryGenerator,
+    "aihub_BCC1N2to3Summary": aihubBCC1N2to3SummaryGenerator,
     "aihub_thesisSummary": aihubThesisSummaryGenerator,
     "aihub_bookSummary": aihubBookSummaryGenerator,
     "aihub_2020newsArticleSummary": aihub2020NewsArticleSummaryGenerator,

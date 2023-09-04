@@ -3,7 +3,7 @@ from datasets import load_dataset
 import random
 
 
-class aihub2020NewsSummaryGenerator(BaseGenerator):
+class aihub2020NewsArticleSummaryGenerator(BaseGenerator):
     def __init__(self) -> None:
         super().__init__()
         self.topicList = []

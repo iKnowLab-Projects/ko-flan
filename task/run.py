@@ -26,17 +26,20 @@ class ParallelTqdm(Tqdm):
 
 class SplitGenerator:
     def __init__(
-        self, tqdm, split, max_instance_per_task, output_dir, require_negative
+        self, tqdm, split, max_instance_per_task, output_dir, require_negative, require_input
     ) -> None:
         self.split = split
         self.max_instance_per_task = max_instance_per_task
         self.output_dir = output_dir
         self.tqdm = tqdm
         self.require_negative = require_negative
+        self.require_input = require_input
 
     def check_item(self, item):
         for c in ["task", "id", "input", "instruction"]:
             assert isinstance(item[c], str)
+            if not self.require_input and c == "input":
+                continue
             assert len(item[c]) > 0
 
         # type check
@@ -109,6 +112,7 @@ class ParallelSplitGenerator(SplitGenerator):
 @click.option("--output_dir", default="./data")
 @click.option("--max_instance_per_task", default=-1)
 @click.option("--require_negative/--allow_no_negative", default=True)
+@click.option("--require_input/--allow_no_input", default=True)
 @click.option(
     "--num_proc", default=0, help="number of parallel ray processes, 0 to max cpu"
 )
@@ -120,6 +124,7 @@ def main(
     max_instance_per_task: Optional[int],
     num_proc: int,
     require_negative: bool,
+    require_input: bool,
     use_ray: bool,
 ):
     if use_ray:
@@ -157,6 +162,7 @@ def main(
                     split=split,
                     output_dir=output_dir,
                     require_negative=require_negative,
+                    require_input=require_input,
                     max_instance_per_task=max_instance_per_task,
                 )
                 futures.append(generator.write_task.remote(task, generator_cls))
@@ -167,6 +173,7 @@ def main(
                     split=split,
                     output_dir=output_dir,
                     require_negative=require_negative,
+                    require_input=require_input,
                     max_instance_per_task=max_instance_per_task,
                 )
                 futures.append(generator.write_task(task, generator_cls))

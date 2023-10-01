@@ -39,7 +39,7 @@ from .aihub_2020newsArticleSummary.generate import aihub2020NewsArticleSummaryGe
 from .aihub_2020lawDocumentSummary.generate import aihub2020lawDocumentSummaryGenerator
 from .aihub_BCC1N20Summary.generate import aihubBCC1N20SummaryGenerator
 from .aihub_BCC1N2to3Summary.generate import aihubBCC1N2to3SummaryGenerator
-
+from .assistant import AULMGenerator
 
 from .kor_nli.generate import KorNLIGenerator
 
@@ -88,8 +88,8 @@ ALL_TASKS = {
     "tl_text_entailment": TlTextEntailmentGenerator,
     "ko_relation_relation": KO_RELATION_RELATIONGenerator,
     "ko_relation_field": KO_RELATION_FIELDGenerator,
-    "kor_nli": KorNLIGenerator
-
+    "kor_nli": KorNLIGenerator,
+    "assist_aulm": AULMGenerator
 }
 
 

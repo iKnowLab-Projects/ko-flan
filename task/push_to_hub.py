@@ -7,7 +7,8 @@ import dask.dataframe as dd
 def check_item(item):
     for c in ["task", "id", "input", "instruction"]:
         assert isinstance(item[c], str)
-        assert len(item[c]) > 0
+        if c != "input":
+            assert len(item[c]) > 0
 
     assert len(item["positives"]) > 0
     # assert len(item["negatives"]) > 0

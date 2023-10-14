@@ -5,6 +5,8 @@ wandb/
 #testfile
 test*.ipynb
 ko_relation
+task/aihub_complaints_topic/raw
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

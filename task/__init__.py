@@ -40,9 +40,10 @@ from .aihub_2020lawDocumentSummary.generate import aihub2020lawDocumentSummaryGe
 from .aihub_BCC1N20Summary.generate import aihubBCC1N20SummaryGenerator
 from .aihub_BCC1N2to3Summary.generate import aihubBCC1N2to3SummaryGenerator
 from .assistant import AULMGenerator
-
 from .kor_nli.generate import KorNLIGenerator
-
+from .aihub_complaints_topic.generate import aihubComplaintsTopicGenerator
+from .aihub_complaints_intend.generate import aihubComplaintsIntendGenerator
+from .aihub_complaints_keyword.generate import aihubComplaintsKeywordGenerator
 ALL_TASKS = {
     "nsmc": NSMCGenerator,
     "apeach": APEACHGenerator,
@@ -76,7 +77,7 @@ ALL_TASKS = {
     "mm_dialog": mmDialogGenerator,
     "aihub_dialogSummaryTopic": aihubDialogSummaryTopicGenerator,
     "aihub_dialogSummarySummary": aihubDialogSummarySummaryGenerator,
-    "aihub_columnDocumnetSummary":aihubColumnDocumentSummaryGenerator,
+    "aihub_columnDocumnetSummary": aihubColumnDocumentSummaryGenerator,
     "aihub_BCC1N2to3Summary": aihubBCC1N2to3SummaryGenerator,
     "aihub_thesisSummary": aihubThesisSummaryGenerator,
     "aihub_bookSummary": aihubBookSummaryGenerator,
@@ -89,7 +90,10 @@ ALL_TASKS = {
     "ko_relation_relation": KO_RELATION_RELATIONGenerator,
     "ko_relation_field": KO_RELATION_FIELDGenerator,
     "kor_nli": KorNLIGenerator,
-    "assist_aulm": AULMGenerator
+    "assist_aulm": AULMGenerator,
+    "aihub_complaints_topic": aihubComplaintsTopicGenerator,
+    "aihub_complaints_intend": aihubComplaintsIntendGenerator,
+    "aihub_complaints_keyword": aihubComplaintsKeywordGenerator
 }
 
 

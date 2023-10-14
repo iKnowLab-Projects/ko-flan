@@ -61,7 +61,8 @@ class SplitGenerator:
 
         if self.require_negative:
             items = filter(
-                lambda x: x["negatives"] is not None and len(x["negatives"]) > 0, items
+                lambda x: x["negatives"] is not None and len(
+                    x["negatives"]) > 0, items
             )
 
         items = list(items)
@@ -165,7 +166,8 @@ def main(
                     require_input=require_input,
                     max_instance_per_task=max_instance_per_task,
                 )
-                futures.append(generator.write_task.remote(task, generator_cls))
+                futures.append(
+                    generator.write_task.remote(task, generator_cls))
 
             else:
                 generator = SplitGenerator(

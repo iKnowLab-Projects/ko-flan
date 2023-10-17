@@ -27,13 +27,14 @@ def main(public: bool, data_dir: str, hub_id: str):
     #     },
     # )
 
-    train = dd.read_json(f"{data_dir}/train/*.json").compute()
-    test = dd.read_json(f"{data_dir}/test/*.json").compute()
+    train = dd.read_json(
+        f"{data_dir}/train/aihub_complaints_topic.json").compute()
+    test = dd.read_json(
+        f"{data_dir}/test/aihub_complaints_topic.json").compute()
     ds = DatasetDict()
     ds["train"] = Dataset.from_pandas(train)
     ds["test"] = Dataset.from_pandas(test)
     print(ds["train"][:5])
-
 
     for split in ["train", "test"]:
         for item in tqdm(ds[split], desc=f"checking {split}"):

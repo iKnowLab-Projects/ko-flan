@@ -60,7 +60,7 @@ def kobest_hellaswag_mapper(item):
     }
 
 
-kobest_boolq_labels = ["아니오", "예"]
+ = ["아니오", "예"]
 
 
 def kobest_boolq_mapper(item):
@@ -81,6 +81,14 @@ def kobest_sentineg_mapper(item):
         "input": item["sentence"],
         "positives": [kobest_boolq_labels[item["label"]]],
         "negatives": [kobest_boolq_labels[1 - item["label"]]],
+    }
+
+def aihub_category_mapper(item):
+    return {
+        "instruction": '주어진 민원을 알맞은 카테고리로 분류하시오',
+        "input": item["sentence"],
+        "positives": [item["potive"]],
+        "negatives": [item["negative"]],
     }
 
 

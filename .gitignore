@@ -1,6 +1,7 @@
 data/
 checkpoint
 wandb/
+.vscode/
 
 #testfile
 test*.ipynb

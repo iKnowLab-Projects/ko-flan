@@ -1,6 +1,6 @@
 import click
 from tqdm.auto import tqdm
-from datasets import load_dataset, Dataset, DatasetDict
+from datasets import load_dataset, Dataset, DatasetDict, Sequence, Value, Features
 import dask.dataframe as dd
 
 
@@ -27,23 +27,29 @@ def main(public: bool, data_dir: str, hub_id: str):
     #     },
     # )
 
-    train = dd.read_json(
-        f"{data_dir}/train/aihub_complaints_topic.json").compute()
-    test = dd.read_json(
-        f"{data_dir}/test/aihub_complaints_topic.json").compute()
+    train = dd.read_json(f"{data_dir}/train/*.json").compute().reset_index(drop=True)
+    test = dd.read_json(f"{data_dir}/test/*.json").compute().reset_index(drop=True)
+
     ds = DatasetDict()
-    ds["train"] = Dataset.from_pandas(train)
-    ds["test"] = Dataset.from_pandas(test)
+    features = Features(**{'instruction': Value(dtype='string', id=None), 'input': Value(dtype='string', id=None), 'positives': Sequence(feature=Value(dtype='string', id=None), length=-1, id=None), 'negatives': Sequence(feature=Value(dtype='string', id=None), length=-1, id=None), 'task': Value(dtype='string', id=None), 'id': Value(dtype='string', id=None)})
+
+    ds["train"] = Dataset.from_pandas(train, features=features)
+    ds["test"] = Dataset.from_pandas(test, features=features)
     print(ds["train"][:5])
 
     for split in ["train", "test"]:
-        for item in tqdm(ds[split], desc=f"checking {split}"):
+        dataset = ds[split]
+
+        for item in tqdm(dataset, desc=f"checking {split}"):
             try:
                 check_item(item)
             except AssertionError as e:
                 print("error at", item)
                 raise e
 
+        ds[split] = dataset
+
+    print(ds)
     ds.push_to_hub(hub_id, not public)
 
 

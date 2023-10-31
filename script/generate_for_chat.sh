@@ -1,9 +1,9 @@
-python -m task.run --splits train \
-    --tasks "assist_aulm" \
-    --allow_no_negative \
-    --allow_no_input \
-    --use-ray \
-    --max_instance_per_task -1
+# python -m task.run --splits train \
+#     --tasks "assist_aulm" \
+#     --allow_no_negative \
+#     --allow_no_input \
+#     --use-ray \
+#     --max_instance_per_task -1
 
 # every task, max 20k
 python -m task.run --splits train \
@@ -15,4 +15,4 @@ python -m task.run --splits train \
 # for test, only klue and kobest, all items
 python -m task.run --splits test --tasks "klue_*,kobest_*,haerae_csatqa" --max_instance_per_task -1 --use-ray 
 
-python -m task.push_to_hub iknow-lab/koflan-1001-chat
+python -m task.push_to_hub iknow-lab/koflan-1009

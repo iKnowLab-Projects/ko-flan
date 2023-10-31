@@ -7,6 +7,8 @@ klue_ynat_labelToTextDict = {
     5: "스포츠",
     6: "정치",
 }
+
+
 klue_ynat_labels = set(klue_ynat_labelToTextDict.values())
 
 
@@ -60,7 +62,7 @@ def kobest_hellaswag_mapper(item):
     }
 
 
- = ["아니오", "예"]
+kobest_boolq_labels = ["아니오", "예"]
 
 
 def kobest_boolq_mapper(item):
@@ -82,13 +84,30 @@ def kobest_sentineg_mapper(item):
         "positives": [kobest_boolq_labels[item["label"]]],
         "negatives": [kobest_boolq_labels[1 - item["label"]]],
     }
-
-def aihub_category_mapper(item):
+aihub_topic_labels=['공통',
+ '토지',
+ '정보통신',
+ '교통',
+ '문화_체육_관광',
+ '농업_축산',
+ '세무',
+ '자동차',
+ '경제',
+ '행정',
+ '안전건설',
+ '상하수도',
+ '보건소',
+ '건축허가',
+ '복지',
+ '환경미화',
+ '산림',
+ '위생']
+def aihub_topic_mapper(item):
     return {
         "instruction": '주어진 민원을 알맞은 카테고리로 분류하시오',
-        "input": item["sentence"],
-        "positives": [item["potive"]],
-        "negatives": [item["negative"]],
+        "input": item["input"],
+        "positives": item['positives'],
+        "negatives": item['negatives']
     }
 
 
@@ -145,4 +164,7 @@ EVAL_LIST = {
         load_args=dict(path="skt/kobest_v1", name="sentineg", split="test"),
         mapper=kobest_sentineg_mapper,
     ),
+    "aihub_complaints_topic":dict(
+        load_args=dict(path="iknow-lab/aihub_complaints_topic", split="test"),
+        mapper=aihub_topic_mapper,)
 }

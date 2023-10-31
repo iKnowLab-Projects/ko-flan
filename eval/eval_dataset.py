@@ -12,6 +12,7 @@ from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
     DataCollatorForLanguageModeling,
+    AutoModelForSeq2SeqLM
 )
 
 from .eval_mapper import EVAL_LIST
@@ -63,13 +64,13 @@ class KoFlanEvalDataset(Dataset):
 
 @torch.no_grad()
 @click.command()
-@click.option("--model_name_or_path", default="iknow-lab/ko-flan-zero-v0-0731")
+@click.option("--model_name_or_path", default="checkpoint/test/epoch-9")
 @click.option("--batch_size", default=8)
 @click.option("--device", default="cuda:0")
 def main(model_name_or_path: str, device: str, batch_size: int):
     tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
     model = (
-        AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
+         AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
         .to(device)
         .eval()
     )
@@ -101,7 +102,7 @@ def main(model_name_or_path: str, device: str, batch_size: int):
     # positives 중 가장 높은 점수와 negatives 중에서 가장 높은 점수를 비교해서
     # 가장 좋은 positive가 가장 좋은 negative보다 높으면 win으로 취급한다.
     # 이후 task별로 win rate를 평가한다.
-
+    
     df_score = df[["task", "id", "answer_type", "score"]]
     df_score = (
         df_score.groupby(["task", "id", "answer_type"])["score"]

@@ -1,7 +1,7 @@
 import click
 from datasets import load_dataset
 from torch.utils.data import Dataset, DataLoader
-from typing import Dict
+from typing import Dict, Optional
 from tqdm import tqdm
 import pandas as pd
 from copy import deepcopy
@@ -19,13 +19,16 @@ from .eval_mapper import EVAL_LIST
 
 
 class KoFlanEvalDataset(Dataset):
-    def __init__(self, tokenizer, max_length: int = 512) -> None:
+    def __init__(self, tokenizer, tasks: str, max_length: int = 512) -> None:
         super().__init__()
 
         # self.items = [item for case in tqdm(dataset, desc="preparing...") for item in self.dataset_unrolling(deepcopy(case))]
         items = []
 
         for task, dataset_info in EVAL_LIST.items():
+            if task != "*" and task not in tasks:
+                continue
+
             mapper = dataset_info["mapper"]
             dataset = load_dataset(**dataset_info["load_args"])
 
@@ -65,18 +68,25 @@ class KoFlanEvalDataset(Dataset):
 @torch.no_grad()
 @click.command()
 @click.option("--model_name_or_path", default="checkpoint/test/epoch-9")
+@click.option("--revision", default=None, type=str)
 @click.option("--batch_size", default=8)
+@click.option("--task", default="*")
 @click.option("--device", default="cuda:0")
-def main(model_name_or_path: str, device: str, batch_size: int):
-    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+@click.option("--output", default="task_score.csv")
+def main(model_name_or_path: str, device: str, batch_size: int, output: str, revision: Optional[str],
+         task: str
+         ):
+    revision = revision or None
+
+    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, revision=revision)
     model = (
-         AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
+         AutoModelForSequenceClassification.from_pretrained(model_name_or_path, revision=revision)
         .to(device)
         .eval()
     )
 
     # dataset = load_dataset(dataset, split=split)
-    dataset = KoFlanEvalDataset(tokenizer=tokenizer)
+    dataset = KoFlanEvalDataset(tokenizer=tokenizer, tasks=task)
     data_loader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -121,7 +131,7 @@ def main(model_name_or_path: str, device: str, batch_size: int):
 
     print("task 별 최종 점수")
     pprint(task_win_rate.to_dict()["win"])
-    task_win_rate.to_csv("task_score.csv")
+    task_win_rate.to_csv(output)
 
 
 if __name__ == "__main__":

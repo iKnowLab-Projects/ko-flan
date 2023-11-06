@@ -1,18 +1,18 @@
 
-python -m eval.eval_dataset \
-    --model_name_or_path checkpoint/koelectra-base-0813-data0731/epoch-10 \
-    --batch_size 32 
-    
-# python -m train.reward_trainer \
-#     --do_eval \
-#     --project ko-flan \
-#     --run_name koflan-0731 \
-#     --model_name_or_path checkpoint/koelectra-base-0813-data0731/epoch-10 \
-#     --dataset iknow-lab/koflan-0731 \
-#     --logging_steps 500 \
-#     --per_device_train_batch_size 8 \
-#     --per_device_eval_batch_size 32 \
-#     --num_train_epochs 10 \
-#     --save_strategy epoch \
-#     --evaluation_strategy epoch \
-#     --output_dir ./checkpoint
+test() {
+    model=$1
+    revision=$2
+    output=$3
+    python -m eval.eval_dataset \
+        --model_name_or_path "$model" \
+        --batch_size 32 \
+        --revision $revision \
+        --output "eval-results/$output"
+}
+
+
+test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-1" "1031-base-1epoch.csv"
+# test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-2" "1031-base-2epoch.csv"
+# test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-3" "1031-base-3epoch.csv"
+# test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-4" "1031-base-4epoch.csv"
+# test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-5" "1031-base-5epoch.csv"

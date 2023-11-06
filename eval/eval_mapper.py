@@ -81,8 +81,8 @@ def kobest_sentineg_mapper(item):
     return {
         "instruction": "주어진 문장의 감정을 분류하세요",
         "input": item["sentence"],
-        "positives": [kobest_boolq_labels[item["label"]]],
-        "negatives": [kobest_boolq_labels[1 - item["label"]]],
+        "positives": [kobest_sentineg_labels[item["label"]]],
+        "negatives": [kobest_sentineg_labels[1 - item["label"]]],
     }
 
 
@@ -127,15 +127,14 @@ def nsmc_mapper(item):
     }
 
 
-apeach_labels = ["혐오 표현이 아닙니다", "혐오표현"]
-
+apeach_labels = ["아니요", "예"]
 
 def apeach_mapper(item):
     return {
-        "instruction": "혐오성을 분류해보세요.",
+        "instruction": "이 문장에 혐오 표현이 담겨있나요?",
         "input": item["text"],
-        "positives": [nsmc_labels[item["class"]]],
-        "negatives": [nsmc_labels[1 - item["class"]]],
+        "positives": [apeach_labels[item["class"]]],
+        "negatives": [apeach_labels[1 - item["class"]]],
     }
 
 

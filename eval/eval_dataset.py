@@ -26,7 +26,7 @@ class KoFlanEvalDataset(Dataset):
         items = []
 
         for task, dataset_info in EVAL_LIST.items():
-            if task != "*" and task not in tasks:
+            if tasks != "*" and task not in tasks:
                 continue
 
             mapper = dataset_info["mapper"]

@@ -21,7 +21,7 @@ class aihub2020NewsArticleSummaryGenerator(BaseGenerator):
         ]
     def generate(self, split: str):
         dataset = load_dataset(
-            "iknow-lab/aihub_2020newsArticleSummary", split=split, token=True
+            "iknow-lab/aihub_2020newsArticleSummary", split=split, use_auth_token=True
         ).shuffle(seed=42)
         
         for item in dataset:

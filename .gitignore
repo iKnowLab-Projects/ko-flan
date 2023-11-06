@@ -2,6 +2,7 @@ data/
 checkpoint
 wandb/
 .vscode/
+lm_cache/
 
 #testfile
 test*.ipynb

@@ -67,7 +67,6 @@ ALL_TASKS = {
     "kowow_sentence_sentence": KOWOWSENTENCEPASSAGEGenerator,
     "kowow_sentence_topic": KOWOWSENTENCETOPICGenerator,
     "kowow_passage_sentence": KOWOWPASSAGESENTENCEGenerator,
-    "nikl_cb2020": nikl.CB2020Generator,
     "ko_nia_normal": KoNiaGenerator,
     "mm_2022dialogTopic": mm2022DialogTopicGenerator,
     "mm_2022newsTopic": mm2022NewsTopicGenerator,

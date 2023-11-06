@@ -16,6 +16,7 @@ class KlueYnatGenerator(BaseGenerator):
             5: "스포츠",
             6: "정치",
         }
+        self.textToLabelDict = {v: k for k, v in self.labelToTextDict.items()}
         self.instructions = [
             "문장을 읽고 주제를 분류하세요.",
             "다음 문장을 해석하고 적절한 카테고리로 분류해보세요.",

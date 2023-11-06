@@ -10,9 +10,9 @@ test() {
         --output "eval-results/$output"
 }
 
-
-test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-1" "1031-base-1epoch.csv"
-# test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-2" "1031-base-2epoch.csv"
-# test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-3" "1031-base-3epoch.csv"
-# test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-4" "1031-base-4epoch.csv"
-# test "heegyu/rm-koflan-1031-roberta-base-5e-5" "epoch-5" "1031-base-5epoch.csv"
+model="heegyu/rm-1031-roberta-large-5e-5"
+test $model "epoch-1" "1031-large-1epoch.csv"
+test $model "epoch-2" "1031-large-2epoch.csv"
+test $model "epoch-3" "1031-large-3epoch.csv"
+test $model "epoch-4" "1031-large-4epoch.csv"
+test $model "epoch-5" "1031-large-5epoch.csv"

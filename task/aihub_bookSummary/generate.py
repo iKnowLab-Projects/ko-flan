@@ -21,7 +21,7 @@ class aihubBookSummaryGenerator(BaseGenerator):
         ]
     def generate(self, split: str):
         dataset = load_dataset(
-            "iknow-lab/aihub_bookSummary", split=split, token=True
+            "iknow-lab/aihub_bookSummary", split=split, use_auth_token=True
         ).shuffle(seed=42)
         
         for item in dataset:

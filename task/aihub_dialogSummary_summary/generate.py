@@ -27,7 +27,7 @@ class aihubDialogSummarySummaryGenerator(BaseGenerator):
 
     def generate(self, split: str):
         dataset = load_dataset(
-            "iknow-lab/aihub_dialogSummary", split=split, token=True
+            "iknow-lab/aihub_dialogSummary", split=split, use_auth_token=True
         ).shuffle(seed=42)
         for item in dataset:
             # 무작위로 instance를 고른다

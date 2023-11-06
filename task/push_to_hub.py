@@ -2,6 +2,7 @@ import click
 from tqdm.auto import tqdm
 from datasets import load_dataset, Dataset, DatasetDict, Sequence, Value, Features
 import dask.dataframe as dd
+import json
 
 
 def check_item(item):
@@ -25,16 +26,30 @@ def main(public: bool, data_dir: str, hub_id: str):
     #         "train": f"{data_dir}/train/*.json",
     #         "test": f"{data_dir}/test/*.json",
     #     },
+    #     cache_dir=None
     # )
+
 
     train = dd.read_json(f"{data_dir}/train/*.json").compute().reset_index(drop=True)
     test = dd.read_json(f"{data_dir}/test/*.json").compute().reset_index(drop=True)
 
-    ds = DatasetDict()
-    features = Features(**{'instruction': Value(dtype='string', id=None), 'input': Value(dtype='string', id=None), 'positives': Sequence(feature=Value(dtype='string', id=None), length=-1, id=None), 'negatives': Sequence(feature=Value(dtype='string', id=None), length=-1, id=None), 'task': Value(dtype='string', id=None), 'id': Value(dtype='string', id=None)})
+    # train["positives"] = train.positives.map(json.loads)
+    # train["negatives"] = train.negatives.map(json.loads)
+    # print(train.dtypes)
 
-    ds["train"] = Dataset.from_pandas(train, features=features)
-    ds["test"] = Dataset.from_pandas(test, features=features)
+    ds = DatasetDict()
+    # features = Features(**{
+    #     'instruction': Value(dtype='string', id=None), 
+    #     'input': Value(dtype='string', id=None), 
+    #     'positives': Sequence(feature=Value(dtype='string', id=None), length=-1, id=None), 
+    #     'negatives': Sequence(feature=Value(dtype='string', id=None), length=-1, id=None), 
+    #     'task': Value(dtype='string', id=None),
+    #     'id': Value(dtype='string', id=None)
+    #     })
+
+
+    ds["train"] = Dataset.from_pandas(train)#, features=features)
+    ds["test"] = Dataset.from_pandas(test)#, features=features)
     print(ds["train"][:5])
 
     for split in ["train", "test"]:
@@ -50,7 +65,7 @@ def main(public: bool, data_dir: str, hub_id: str):
         ds[split] = dataset
 
     print(ds)
-    ds.push_to_hub(hub_id, not public)
+    ds.push_to_hub(hub_id, not public,)
 
 
 if __name__ == "__main__":

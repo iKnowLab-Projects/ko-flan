@@ -1,6 +1,6 @@
 bs4
-ray
-datasets
+ray==2.6.0
+datasets==2.5.2
 jsonlines
 pandas
 tqdm
@@ -8,11 +8,14 @@ numpy
 scikit-learn
 seaborn
 matplotlib
-click
 black
+dask
+click
 huggingface-hub
-accelerate
+accelerate==0.20.3
 transformers
 wandb
 tokenizers
 evaluate
+gradio==3.48.0
+gradio_client==0.6.1

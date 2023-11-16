@@ -6,13 +6,17 @@ test() {
     python -m eval.eval_dataset \
         --model_name_or_path "$model" \
         --batch_size 32 \
+        --task "aihub_complaints_topic,ko_relation_fields,aihub_dialog_topic,csatqa-*" \
         --revision $revision \
         --output "eval-results/$output"
 }
 
-model="heegyu/rm-1031-roberta-large-5e-5"
-test $model "epoch-1" "1031-large-1epoch.csv"
-test $model "epoch-2" "1031-large-2epoch.csv"
-test $model "epoch-3" "1031-large-3epoch.csv"
-test $model "epoch-4" "1031-large-4epoch.csv"
-test $model "epoch-5" "1031-large-5epoch.csv"
+# model="iknow-lab/ko-flan-zero-v0-0731"
+# test $model "main" "ko-flan-zero-v0-0731.csv"
+
+model="iknow-lab/azou"
+test $model "epoch-5" "azou-5epoch.csv"
+test $model "epoch-4" "azou-4epoch.csv"
+test $model "epoch-3" "azou-3epoch.csv"
+test $model "epoch-2" "azou-2epoch.csv"
+test $model "epoch-1" "azou-1epoch.csv"

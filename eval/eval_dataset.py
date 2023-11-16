@@ -16,6 +16,16 @@ from transformers import (
 )
 
 from .eval_mapper import EVAL_LIST
+import fnmatch
+
+
+def pattern_match(patterns, source_list):
+    task_names = set()
+    for pattern in patterns:
+
+        for matching in fnmatch.filter(source_list, pattern):
+            task_names.add(matching)
+    return sorted(list(task_names))
 
 
 class KoFlanEvalDataset(Dataset):
@@ -25,9 +35,12 @@ class KoFlanEvalDataset(Dataset):
         # self.items = [item for case in tqdm(dataset, desc="preparing...") for item in self.dataset_unrolling(deepcopy(case))]
         items = []
 
-        for task, dataset_info in EVAL_LIST.items():
-            if tasks != "*" and task not in tasks:
-                continue
+        all_task = EVAL_LIST.keys()
+        tasks = pattern_match(tasks.split(","), all_task)
+        print("tasks", tasks)
+
+        for task in tasks:
+            dataset_info = EVAL_LIST[task]
 
             mapper = dataset_info["mapper"]
             dataset = load_dataset(**dataset_info["load_args"])
@@ -37,6 +50,8 @@ class KoFlanEvalDataset(Dataset):
                     item["task"] = task
                     item["id"] = f"{task}-{task_idx}"
                     items.append(item)
+
+            print(task, len(dataset))
 
         self.items = items
         self.max_length = max_length
@@ -79,6 +94,7 @@ def main(model_name_or_path: str, device: str, batch_size: int, output: str, rev
     revision = revision or None
 
     tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, revision=revision)
+    tokenizer_side = "left"
     model = (
          AutoModelForSequenceClassification.from_pretrained(model_name_or_path, revision=revision)
         .to(device)

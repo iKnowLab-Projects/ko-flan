@@ -1,3 +1,6 @@
+import re
+
+
 klue_ynat_labelToTextDict = {
     0: "IT과학",
     1: "경제",
@@ -111,10 +114,107 @@ def aihub_topic_mapper(item):
         "instruction": '주어진 민원을 알맞은 카테고리로 분류하시오',
         "input": item["input"],
         "positives": item['positives'],
-        "negatives": aihub_topic_labels - set(item['positives'])
+        "negatives": list(set(aihub_topic_labels) - set(item['positives']))
     }
 
+def kowow_topic_mapper(item):
+    context = item["context"].replace("0_Apprentice", "0").replace("1_Wizard", "1")
+    return {
+        "instruction": '대화 내용을 읽고 대화의 주제를 분류하세요.',
+        "input": context,
+        "positives": item["postive_topic"],
+        "negatives": item["negative_topic"]
+    }
 
+aihub_dialog_topics = {'개인 및 관계',
+ '미용과 건강',
+ '상거래(쇼핑)',
+ '시사/교육',
+ '식음료',
+ '여가 생활',
+ '일과 직업',
+ '주거와 생활',
+ '행사'}
+
+def aihub_dialog_topic_mapper(item):
+    context = item["conversation"].replace("name 01", "A").replace("name 02", "B").replace("name 03", "C").replace("name 04", "D")
+    return {
+        "instruction": '대화 내용을 읽고 대화의 주제를 분류하세요.',
+        "input": context,
+        "positives": [item["topic"]],
+        "negatives": list(aihub_dialog_topics - {item["topic"]})
+    }
+
+mm_chat_topics = {'가사 및 가족',
+ '공연 및 관람',
+ '날씨와 계절',
+ '미용과 건강',
+ '반려동물',
+ '사회 생활 및 활동',
+ '쇼핑과 상품',
+ '시사(정치, 경제, 사회)',
+ '식음료',
+ '여행',
+ '연애와 결혼',
+ '일과 직업',
+ '일상',
+ '일상 트렌드',
+ '콘텐츠',
+ '학교 생활'}
+def mm_chat_topic_mapper(item):
+    context = item["paragraph"]
+    return {
+        "instruction": '대화 내용을 읽고 대화의 주제를 분류하세요.',
+        "input": context,
+        "positives": [item["topic"]],
+        "negatives": list(mm_chat_topics - {item["topic"]})
+    }
+
+ko_relation_fields = {'지역_사회', '국제', 'IT_과학', '연예', '문화', '정치', '의약학', '스포츠', '경제',
+       '기계공학', '인문학', '사회과학', '전기전자'}
+
+def ko_relation_fields_mapper(item):
+    context = item["sentence"]
+    return {
+        "instruction": '이 문장의 주제나 분야는 무엇이라고 생각하시나요?',
+        "input": context,
+        "positives": [item["field"]],
+        "negatives": list(ko_relation_fields - {item["field"]})
+    }
+
+def haerae_csatqa_mapper(item):
+    label = item["gold"]
+    text = item["context"]
+    instruction = item["question"]
+
+    # instruction에 input까지 들어가있는 경우
+    if text is None:
+        unpack = instruction.split("\n", 1)
+        if len(unpack) == 2:
+            instruction, text = unpack
+        else:
+            # 다음 중 문법적으로 가장 정확한 문장은? 과 같이 아예 input이 없는 경우
+            # 모든 선택지를 본문에 넣는다.
+            instruction = unpack[0]
+            text = "\n".join(
+                f"{i}: " + item[f"option#{i}"] for i in range(1, 6)
+            )
+
+    # 여러 공백이나 특문 이어진 경우 제거(table)
+    text = re.sub("(\s)+", "\\1", text).replace("·", "")
+    instruction = re.sub("(\s)+", "\\1", instruction).replace("·", "")
+
+    pos = item[f"option#{label}"]
+    neg = [item[f"option#{i}"] for i in range(1, 6) if i != label]
+
+    return {
+        "instruction": instruction,
+        "input": text,
+        "positives": [pos],
+        "negatives": neg,
+    }
+
+    
 nsmc_labels = ["부정", "긍정"]
 
 
@@ -169,5 +269,30 @@ EVAL_LIST = {
     ),
     "aihub_complaints_topic": dict(
         load_args=dict(path="iknow-lab/aihub_complaints_topic", split="test"),
-        mapper=aihub_topic_mapper,)
+        mapper=aihub_topic_mapper,),
+    "aihub_dialog_topic": dict(
+        load_args=dict(path="iknow-lab/aihub_dialogSummary", split="test"),
+        mapper=aihub_dialog_topic_mapper
+    ),
+    "kowow_dialog_topic": dict(
+        load_args=dict(path="iknow-lab/kowow_dialog", split="test"),
+        mapper=kowow_topic_mapper
+    ),
+    "mm_chat_topic": dict(
+        load_args=dict(path="iknow-lab/mm_2022chatTopic", split="test"),
+        mapper=mm_chat_topic_mapper
+    ),
+    "ko_relation_fields": dict(
+        load_args=dict(path="iknow-lab/korean_relation", split="test"),
+        mapper=ko_relation_fields_mapper
+    ),
+    
+    ** {
+        f"csatqa-{k}": dict(
+            load_args=dict(path="HAERAE-HUB/csatqa", name=k, split="test"),
+            mapper=haerae_csatqa_mapper
+        )
+        for k in ["GR", "LI", "RCH", "RCS", "RCSS", "WR"]
+    }
+    
 }
